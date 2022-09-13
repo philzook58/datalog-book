@@ -1,0 +1,6 @@
+[book]
+authors = ["Philip Zucker"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Datalog Comin' Right At Ya!"
