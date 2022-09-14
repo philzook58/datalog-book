@@ -4,3 +4,10 @@ language = "en"
 multilingual = false
 src = "src"
 title = "Datalog Comin' Right At Ya!"
+
+
+[output.html]
+additional-js = ["src/custom.js"]
+
+[output.html.playground]
+editable = true
