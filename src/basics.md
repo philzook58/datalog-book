@@ -18,7 +18,7 @@ Tables in Souffle datalog have set semantics, meaning duplicate rows are coalesc
 
 The user only sees relations marked as `.output`.
 
-```souffle
+```souffle,editable
 .decl mytable(x : symbol, y : number, z : unsigned, w : float)
 mytable("42", -42, 42, 42.1).
 mytable("42", -42, 42, 42.1). // Duplicate rows are coalesced

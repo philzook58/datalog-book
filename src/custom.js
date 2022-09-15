@@ -39,9 +39,21 @@
             code_block.append(result_block);
         }
 
-        let text = playground_text(code_block);
+        let code = playground_text(code_block);
 
-        result_block.innerText = `Running... ${text}`;
+        result_block.innerText = "";
+        var myParams = {
+            'print': function (text) { result_block.innerText += text + "\n" },
+            'printErr': function (text) { result_block.innerText += text + "\n" },
+            "noInitialRun": false,
+            "noExitRuntime": false,
+            "arguments": ["--no-preprocessor", "-D", "-", "myfile.dl"],
+            "preRun": function () {
+                myParams.FS.writeFile('myfile.dl', code);
+            }
+        };
+        SOUFFLE(myParams);
+
     }
 
     // Process playground code blocks
