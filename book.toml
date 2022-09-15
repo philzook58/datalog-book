@@ -7,7 +7,7 @@ title = "Datalog Comin' Right At Ya!"
 
 
 [output.html]
-additional-js = ["src/custom.js"]
+additional-js = ["src/souffle.wasm", "src/souffle.js", "src/custom.js"]
 
 [output.html.playground]
 editable = true
