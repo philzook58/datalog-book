@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html" class="active"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">2.</strong> Transitivity</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">3.</strong> Negation</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumptions</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">7.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html" class="active"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">2.</strong> Recursion</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">4.</strong> Negation</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">5.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">6.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">7.</strong> Aggregates, Lattices, and Subsumptions</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">8.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">9.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">10.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -143,6 +143,72 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="basics"><a class="header" href="#basics">Basics</a></h1>
+<p>To get started, let's demonstrate the core constructs of Datalog.</p>
+<p>In Souffle Datalog, tables are declared alongside the types and names of their columns. This is the analog of a <code>CREATE</code> statement in SQL. The names of the columns are not used except for printing in Souffle.</p>
+<p>Souffle Datalog has a number of basic built in types</p>
+<ul>
+<li><code>symbol</code> is effectively a string datatype</li>
+<li><code>number</code> is signed integers</li>
+<li><code>unsigned</code> is unsigned integers</li>
+<li><code>float</code> are floating point numbers</li>
+</ul>
+<p>Facts are inserted into the database by &quot;calling&quot; the table wit values for the columns. 
+This is the analog of a <code>INSERT INTO mytable FROM VALUES (&quot;42&quot;,-42,42,42.1);</code> statement in SQL.</p>
+<p>Tables in Souffle datalog have set semantics, meaning duplicate rows are coalesced into a single row.</p>
+<p>The user only sees relations marked as <code>.output</code>.</p>
+<pre><code class="language-souffle editable">.decl mytable(x : symbol, y : number, z : unsigned, w : float)
+mytable(&quot;42&quot;, -42, 42, 42.1).
+mytable(&quot;42&quot;, -42, 42, 42.1). // Duplicate rows are coalesced
+mytable(&quot;Hi&quot;, -47, 7331, 11.1).
+.output mytable(IO=stdout)
+
+.decl this_table_wont_print(x : symbol)
+this_table_wont_print(&quot;hidden&quot;).
+</code></pre>
+<p>The simplistic syntax for insertion of facts is nice, but datalog rules are where it shines. 
+Rules describe how new facts can be derived from the already known database of facts. 
+They have a right hand side know as a clause which corresponds roughly to a <code>SELECT</code> query and left hand side known as a head which corresponds to an <code>INSERT</code>. Facts can be seen as a rule with an empty unconditional body.</p>
+<p>An SQL style query can be encoded by saving the result to a table and outputting this table.</p>
+<pre><code class="language-souffle">.decl foo(x : symbol, y : symbol)
+foo(&quot;a&quot;,&quot;a&quot;).
+foo(&quot;b&quot;,&quot;a&quot;).
+
+.decl myquery(x : symbol)
+myquery(a) :- foo(a,a). 
+.output myquery(IO=stdout)
+</code></pre>
+<p>There is something to be said about examples involving family. This is a concept we primally understand (hence the popularity of the Fast and Furious franchise). The very word relation</p>
+<p>We can use rules to extract grandparent tables from parent tables.</p>
+<pre><code>parent
+grandparent(a,c) :- parent(a,b), parent(b,c).
+greatgrandparent(a,c) :- parent(a,b), grandparent(b,c).
+greatgreatgrandparent(a,c) :- parent(a,b), greatgrandparent(b,c).
+</code></pre>
+<p>There is a theme here, Any person deep in our family tree is an ancestor. To describe this concept, we need to use a recursive rule.</p>
+<pre><code>ancestor(a,b) :- parent(a,b).
+ancestor(a,c) :- parent(a,b), ancestor(b,c).
+</code></pre>
+<p>We can also count how deep a relationship is.</p>
+<pre><code>ancestor(1, a, b) :- parent(a,b).
+ancestor(n+1, a,c) :- parent(a,b), ancestor(n,b,c).
+</code></pre>
+<p>Your ancestors should form a tree structure. If they form a DAG, that's kind of messed up.</p>
+<p>If your ancestor relationship has <em>cycles</em> in it, that is deeply troubling as a human. But datalog will be happy as a clam!</p>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<h2 id="resources"><a class="header" href="#resources">Resources</a></h2>
+<ul>
+<li><a href="https://www.stephendiehl.com/posts/exotic04.html">Exotic Programming Ideas: Part 4 (Datalog) - Stephen Diehl</a></li>
+<li><a href="https://souffle-lang.github.io/tutorial">Souffle Datalog tutorial</a></li>
+</ul>
+<pre><code class="language-souffle editable">.decl edge(x : number, y : number)
+edge(1,2).
+.output edge(IO=stdout)
+</code></pre>
+<p>Hey</p>
+<p>Suggestions:
+Easy Sudoku
+matrix logic puzzles.
+first cousins</p>
 
                     </main>
 
@@ -180,6 +246,11 @@
             window.playground_copyable = true;
         </script>
 
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
 
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
@@ -190,6 +261,7 @@
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        <script type="text/javascript" src="src/custom.js"></script>
 
 
     </body>
