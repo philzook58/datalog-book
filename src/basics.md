@@ -45,7 +45,6 @@ myquery(a) :- foo(a,a).
 .output myquery(IO=stdout)
 ```
 
-
 There is something to be said about examples involving family. This is a concept we primally understand (hence the popularity of the Fast and Furious franchise). The very word relation
 
 We can use rules to extract grandparent tables from parent tables.
@@ -70,10 +69,18 @@ We can also count how deep a relationship is.
 ancestor(1, a, b) :- parent(a,b).
 ancestor(n+1, a,c) :- parent(a,b), ancestor(n,b,c).
 ```
+
 Your ancestors should form a tree structure. If they form a DAG, that's kind of messed up.
 
 If your ancestor relationship has _cycles_ in it, that is deeply troubling as a human. But datalog will be happy as a clam!
 
+## Exercises
+
+
+
+## Resources
+- [Exotic Programming Ideas: Part 4 (Datalog) - Stephen Diehl](https://www.stephendiehl.com/posts/exotic04.html)
+- [Souffle Datalog tutorial](https://souffle-lang.github.io/tutorial)
 
 
 
@@ -91,4 +98,5 @@ Hey
 
 Suggestions:
 Easy Sudoku
-table puzzles.
+matrix logic puzzles.
+first cousins
