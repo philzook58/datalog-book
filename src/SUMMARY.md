@@ -13,6 +13,7 @@
 - [Graphs](./graphs.md)
 
 # Applications
+- [Egglog](./egglog.md)
 # Appendix
 - [SQL](./sql.md)
 - [Implementations](./implementations.md)

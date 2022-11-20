@@ -7,7 +7,9 @@ title = "Datalog Comin' Right At Ya!"
 
 
 [output.html]
-additional-js = ["src/souffle.wasm", "src/souffle.js", "src/custom.js"]
+additional-js = [ "src/souffle.js", "src/souffle.wasm",
+    "src/custom.js", "src/web_demo_bg.wasm", "src/web_demo.js", "src/custom_egg.js"]
+mathjax-support = true
 
 [output.html.playground]
 editable = true
