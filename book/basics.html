@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html" class="active"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">2.</strong> Recursion</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">4.</strong> Negation</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">5.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">6.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">7.</strong> Aggregates, Lattices, and Subsumptions</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">8.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">9.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">10.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html" class="active"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumptions</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">7.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">10.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">11.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">12.</strong> Implementations</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -152,7 +152,11 @@
 <li><code>unsigned</code> is unsigned integers</li>
 <li><code>float</code> are floating point numbers</li>
 </ul>
-<p>Facts are inserted into the database by &quot;calling&quot; the table wit values for the columns. 
+<p>Here's an example declaration</p>
+<pre><code class="language-souffle">.decl sausages(maker : symbol, difference : number, count : unsigned, inches : float)
+</code></pre>
+<h2 id="facts"><a class="header" href="#facts">Facts</a></h2>
+<p>Facts are inserted into the database by &quot;calling&quot; the table with values for the columnsc followed by a period. 
 This is the analog of a <code>INSERT INTO mytable FROM VALUES (&quot;42&quot;,-42,42,42.1);</code> statement in SQL.</p>
 <p>Tables in Souffle datalog have set semantics, meaning duplicate rows are coalesced into a single row.</p>
 <p>The user only sees relations marked as <code>.output</code>.</p>
@@ -165,26 +169,28 @@ mytable(&quot;Hi&quot;, -47, 7331, 11.1).
 .decl this_table_wont_print(x : symbol)
 this_table_wont_print(&quot;hidden&quot;).
 </code></pre>
-<p>The simplistic syntax for insertion of facts is nice, but datalog rules are where it shines. 
-Rules describe how new facts can be derived from the already known database of facts. 
-They have a right hand side know as a clause which corresponds roughly to a <code>SELECT</code> query and left hand side known as a head which corresponds to an <code>INSERT</code>. Facts can be seen as a rule with an empty unconditional body.</p>
-<p>An SQL style query can be encoded by saving the result to a table and outputting this table.</p>
+<h2 id="rules"><a class="header" href="#rules">Rules</a></h2>
+<p>The simplistic syntax for insertion of facts is nice, but datalog rules are where it shines.</p>
+<p>Rules describe how new facts can be derived from the already known database of facts. Sometimes the initial facts are called the intensional database (IDB) and the derived facts are called the extensional database (EDB).</p>
+<p>They have a right hand side know as a clause which corresponds roughly to a <code>SELECT</code> query and left hand side known as a head which corresponds to an <code>INSERT</code>. Facts can be seen as a rule with an empty unconditional body.</p>
+<p>An SQL style query can be encoded by making a rule whose body corresponds to the query and saves the result to a table in the head.</p>
 <pre><code class="language-souffle">.decl foo(x : symbol, y : symbol)
 foo(&quot;a&quot;,&quot;a&quot;).
 foo(&quot;b&quot;,&quot;a&quot;).
 
 .decl myquery(x : symbol)
-myquery(a) :- foo(a,a). 
+myquery(a) :- foo(x,x). 
 .output myquery(IO=stdout)
 </code></pre>
-<p>There is something to be said about examples involving family. This is a concept we primally understand (hence the popularity of the Fast and Furious franchise). The very word relation</p>
-<p>We can use rules to extract grandparent tables from parent tables.</p>
-<pre><code>parent
-grandparent(a,c) :- parent(a,b), parent(b,c).
+<h2 id="recursion"><a class="header" href="#recursion">Recursion</a></h2>
+<p>Ok, rules are great, but what is <em>really</em> great are recursive rules.</p>
+<p>There is something to be said about examples involving family. This is a concept we primally understand (hence the popularity of the Fast and Furious franchise).</p>
+<p>We can use rules to extract grandparent, greatgrandparent, and greatgreatgrandparent tables from parent tables.</p>
+<pre><code>grandparent(a,c) :- parent(a,b), parent(b,c).
 greatgrandparent(a,c) :- parent(a,b), grandparent(b,c).
 greatgreatgrandparent(a,c) :- parent(a,b), greatgrandparent(b,c).
 </code></pre>
-<p>There is a theme here, Any person deep in our family tree is an ancestor. To describe this concept, we need to use a recursive rule.</p>
+<p>There is a theme here, a pattern to extract. Any person deep in our family tree is our ancestor. To describe this concept, we can use a recursive rule. Our parent is our ancestor, and the parent of our ancestor is also an ancestor.</p>
 <pre><code>ancestor(a,b) :- parent(a,b).
 ancestor(a,c) :- parent(a,b), ancestor(b,c).
 </code></pre>
@@ -218,7 +224,7 @@ first cousins</p>
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="chapter_1.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="negation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -232,7 +238,7 @@ first cousins</p>
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="chapter_1.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="negation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

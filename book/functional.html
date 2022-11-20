@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">2.</strong> Recursion</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">4.</strong> Negation</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">5.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">6.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">7.</strong> Aggregates, Lattices, and Subsumptions</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">8.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">9.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html" class="active"><strong aria-hidden="true">10.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumptions</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">7.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html" class="active"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">10.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">11.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">12.</strong> Implementations</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -143,7 +143,29 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="functional-programs"><a class="header" href="#functional-programs">Functional Programs</a></h1>
+<p>There are two issues to tackle when converting functional programs to datalog.</p>
+<ol>
+<li>Datalog deals mostly in relations not functions.</li>
+<li>Datalog is bottom up, whereas functional programs are demand driven (they only compute functions that are called).</li>
+</ol>
+<p>Functional programs can be converted to logic programs by making the return value a parameter to the relation. A function is a subcase of relations in which the last column is determined by the initial columns.</p>
+<p>For example, the function <code>factorial(n)</code> becomes the relation <code>factorial(n,res)</code> or <code>append(x,y)</code> becomes <code>append(x,y,res)</code>.</p>
+<pre><code class="language-souffle">.decl factorial(n : unsigned, res : unsigned)
+factorial(0,1).
+factorial(1,1).
+factorial(n+1, (n + 1) * m) :- factorial(n, m), n &lt; 10.
+.output factorial(IO=stdout)
+</code></pre>
+<p>A priori I have chosen to stop the process at <code>n = 10</code>. This is fine if we can know at compile time what answers we need computed. What if we don't though? Then we need to write the function in a demand driven style.</p>
+<h2 id="demand"><a class="header" href="#demand">Demand</a></h2>
+<h2 id="the-stack"><a class="header" href="#the-stack">The Stack</a></h2>
+<p>In the actual implementation of a functional program, there exists some data structure to keep track of who needs what results and what to do with them next. This is typically achieved via a stack, which records return addresses and records the needed state of the call site.</p>
+<p>The stack is an implicit data structure that most languages maintain for you, but it is useful to note sometime that it is there.</p>
+<p>This same observation is useful in other programming contexts. It is sometimes relatively wasteful to use the general purpose function call mechanism. You can convert a recursive function call into a loop and maintain that analog of your own stack for efficiency purposes.</p>
+<p>Datalog does not have an implicit stack. If you want such a thing, you must build it.</p>
 <h1 id="macros"><a class="header" href="#macros">Macros</a></h1>
+<p>Souffle datalog by default offers C preprocesor macros. These are useful for defining simple functions.</p>
+<h1 id="inline-relations"><a class="header" href="#inline-relations">Inline relations</a></h1>
 
                     </main>
 

@@ -2,9 +2,8 @@
 
 [Introduction](./README.md)
 - [Basics](./basics.md)
-- [Recursion](./chapter_1.md)
-- [Algebraic Data Types](./adt.md)
 - [Negation](./negation.md)
+- [Algebraic Data Types](./adt.md)
 - [Semi-naive Evaluation](./seminaive.md)
 - [Program Analysis](./analysis.md)
 - [Aggregates, Lattices, and Subsumptions](lattices.md)

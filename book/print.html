@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">2.</strong> Recursion</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">4.</strong> Negation</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">5.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">6.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">7.</strong> Aggregates, Lattices, and Subsumptions</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">8.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">9.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">10.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumptions</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">7.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">10.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">11.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">12.</strong> Implementations</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -164,7 +164,11 @@
 <li><code>unsigned</code> is unsigned integers</li>
 <li><code>float</code> are floating point numbers</li>
 </ul>
-<p>Facts are inserted into the database by &quot;calling&quot; the table wit values for the columns. 
+<p>Here's an example declaration</p>
+<pre><code class="language-souffle">.decl sausages(maker : symbol, difference : number, count : unsigned, inches : float)
+</code></pre>
+<h2 id="facts"><a class="header" href="#facts">Facts</a></h2>
+<p>Facts are inserted into the database by &quot;calling&quot; the table with values for the columnsc followed by a period. 
 This is the analog of a <code>INSERT INTO mytable FROM VALUES (&quot;42&quot;,-42,42,42.1);</code> statement in SQL.</p>
 <p>Tables in Souffle datalog have set semantics, meaning duplicate rows are coalesced into a single row.</p>
 <p>The user only sees relations marked as <code>.output</code>.</p>
@@ -177,26 +181,28 @@ mytable(&quot;Hi&quot;, -47, 7331, 11.1).
 .decl this_table_wont_print(x : symbol)
 this_table_wont_print(&quot;hidden&quot;).
 </code></pre>
-<p>The simplistic syntax for insertion of facts is nice, but datalog rules are where it shines. 
-Rules describe how new facts can be derived from the already known database of facts. 
-They have a right hand side know as a clause which corresponds roughly to a <code>SELECT</code> query and left hand side known as a head which corresponds to an <code>INSERT</code>. Facts can be seen as a rule with an empty unconditional body.</p>
-<p>An SQL style query can be encoded by saving the result to a table and outputting this table.</p>
+<h2 id="rules"><a class="header" href="#rules">Rules</a></h2>
+<p>The simplistic syntax for insertion of facts is nice, but datalog rules are where it shines.</p>
+<p>Rules describe how new facts can be derived from the already known database of facts. Sometimes the initial facts are called the intensional database (IDB) and the derived facts are called the extensional database (EDB).</p>
+<p>They have a right hand side know as a clause which corresponds roughly to a <code>SELECT</code> query and left hand side known as a head which corresponds to an <code>INSERT</code>. Facts can be seen as a rule with an empty unconditional body.</p>
+<p>An SQL style query can be encoded by making a rule whose body corresponds to the query and saves the result to a table in the head.</p>
 <pre><code class="language-souffle">.decl foo(x : symbol, y : symbol)
 foo(&quot;a&quot;,&quot;a&quot;).
 foo(&quot;b&quot;,&quot;a&quot;).
 
 .decl myquery(x : symbol)
-myquery(a) :- foo(a,a). 
+myquery(a) :- foo(x,x). 
 .output myquery(IO=stdout)
 </code></pre>
-<p>There is something to be said about examples involving family. This is a concept we primally understand (hence the popularity of the Fast and Furious franchise). The very word relation</p>
-<p>We can use rules to extract grandparent tables from parent tables.</p>
-<pre><code>parent
-grandparent(a,c) :- parent(a,b), parent(b,c).
+<h2 id="recursion"><a class="header" href="#recursion">Recursion</a></h2>
+<p>Ok, rules are great, but what is <em>really</em> great are recursive rules.</p>
+<p>There is something to be said about examples involving family. This is a concept we primally understand (hence the popularity of the Fast and Furious franchise).</p>
+<p>We can use rules to extract grandparent, greatgrandparent, and greatgreatgrandparent tables from parent tables.</p>
+<pre><code>grandparent(a,c) :- parent(a,b), parent(b,c).
 greatgrandparent(a,c) :- parent(a,b), grandparent(b,c).
 greatgreatgrandparent(a,c) :- parent(a,b), greatgrandparent(b,c).
 </code></pre>
-<p>There is a theme here, Any person deep in our family tree is an ancestor. To describe this concept, we need to use a recursive rule.</p>
+<p>There is a theme here, a pattern to extract. Any person deep in our family tree is our ancestor. To describe this concept, we can use a recursive rule. Our parent is our ancestor, and the parent of our ancestor is also an ancestor.</p>
 <pre><code>ancestor(a,b) :- parent(a,b).
 ancestor(a,c) :- parent(a,b), ancestor(b,c).
 </code></pre>
@@ -221,19 +227,151 @@ edge(1,2).
 Easy Sudoku
 matrix logic puzzles.
 first cousins</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-1"><a class="header" href="#chapter-1">Chapter 1</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="algebraic-data-types"><a class="header" href="#algebraic-data-types">Algebraic Data Types</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="negation"><a class="header" href="#negation">Negation</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="algebraic-data-types"><a class="header" href="#algebraic-data-types">Algebraic Data Types</a></h1>
+<p>Algebraic data types are a programming language feature that are very useful for describing tree-like structures.</p>
+<pre><code class="language-souffle">.type IntList = Nil {} | Cons {hd : number, tl : IntList}
+.type BinTree = Empty {} | Leaf {n : number} | Node {left : BinTree, right : BinTree}
+
+</code></pre>
+<p>Traditional datalog does not include algebraic datatypes. Algebraic datatypes completely destroy the termination guarantees of datalog.</p>
+<pre><code class="language-souffle">.type Nat = Succ {prev : Nat} | Zero {}
+
+.decl nats(n : Nat)
+nats($Zero()).
+nats($Succ(n)) :- nats(n).
+.limitsize nats(n=10)
+.output nats(IO=stdout)
+</code></pre>
+<p>Despite that, they are profoundly useful.</p>
+<h2 id="subterm-predicates"><a class="header" href="#subterm-predicates">Subterm predicates</a></h2>
+<p>A useful predicate is one that collects up all subterms. You can use this for example to determine which lists to compute the length of. Without this blocking predicate, datalog would compute the length of all lists, which is not what you want.</p>
+<pre><code class="language-souffle">.type IntList = Nil {} | Cons {hd : number, tl : IntList}
+.type BinTree = Empty {} | Leaf {n : number} | Node {left : BinTree, right : BinTree}
+
+.decl list(l : IntList)
+list(tl) :- list($Cons(_hd,tl)).
+.decl bintree(b : BinTree)
+bintree(left), bintree(right) :- bintree($Node(left,right)).
+
+.decl length(l : IntList, n : unsigned)
+length($Nil(), 0).
+length(l, n + 1) :- list(l), l = $Cons(_hd,tl), length(tl, n).
+
+list($Cons(3,$Cons(2,$Cons(1,$Nil())))).
+.output length(IO=stdout)
+</code></pre>
+<h2 id="autoinc-and-skolemization"><a class="header" href="#autoinc-and-skolemization">Autoinc and Skolemization</a></h2>
+<p>It is very tempting and operationally simple to use the <code>autoinc()</code> feature, which maintains a mutable counter that increments by one every time you call it. This is really problematic with regards to the declarative semantics of datalog. You get different results depending on the order and how many times you execute rules.</p>
+<p>It is almost universally better to </p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="semi-naive-evaluation"><a class="header" href="#semi-naive-evaluation">Semi-naive Evaluation</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="program-analysis"><a class="header" href="#program-analysis">Program Analysis</a></h1>
+<h2 id="pure-expressions"><a class="header" href="#pure-expressions">Pure Expressions</a></h2>
+<h3 id="huttons-razor"><a class="header" href="#huttons-razor">Hutton's Razor</a></h3>
+<p>There is a very solid rule thumb called Hutton's razor that you should try out programming language techqniues on a simple language of only addition and constants first. You can learn a lot.</p>
+<p>The first thing to do with such expressions is of course to evaluate them.</p>
+<pre><code class="language-souffle">.type AExpr = Add {x : AExpr, y : AExpr} | Lit {n : number}
+
+.decl aexpr(e : AExpr)
+aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
+
+.decl eval(e : AExpr, v : number)
+eval(e, vx + vy) :- aexpr(e), e = $Add(x,y), eval(x,vx), eval(y,vy).
+eval(e, n) :- aexpr(e), e = $Lit(n).
+
+aexpr($Add($Add($Lit(1), $Lit(2)), $Lit(3))).
+.output eval(IO=stdout)
+</code></pre>
+<h3 id="adding-variables"><a class="header" href="#adding-variables">Adding Variables</a></h3>
+<p>One direction extend the language to make it more interesting is to add variables. Nothing needs to change, but now eval becomes a partial relation, only filled in for subterms that do not contain the variables. <code>eval</code> now has the flavor of a constant propagation analysis. By using the results of the analysis, we can simplify the original expressions. Since <code>eval</code> does not depend on <code>simplify</code>, we can check whether or not an entry in <code>eval</code> exists for <code>e</code> using negation.</p>
+<pre><code class="language-souffle">.type AExpr = Add {x : AExpr, y : AExpr} | Lit {n : number} | Var {v : symbol}
+
+.decl aexpr(e : AExpr)
+aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
+
+.decl eval(e : AExpr, v : number)
+eval(e, vx + vy) :- aexpr(e), e = $Add(x,y), eval(x,vx), eval(y,vy).
+eval(e, n) :- aexpr(e), e = $Lit(n).
+
+.decl simplify(orig : AExpr, simp : AExpr)
+simplify(e,$Lit(v)) :- eval(e, v).
+simplify(e,e) :- aexpr(e), !eval(e, _), e = $Var(x).
+simplify(e,$Add(x1,y1)) :- aexpr(e), !eval(e, _), e = $Add(x,y), simplify(x,x1), simplify(y,y1).
+
+aexpr($Add($Add($Lit(1), $Lit(2)), $Var(&quot;x&quot;))).
+.output simplify(IO=stdout)
+</code></pre>
+<h3 id="evaluation-in-environments"><a class="header" href="#evaluation-in-environments">Evaluation in Environments</a></h3>
+<p>We can also evaluate the language in an environment. I'm going to change my representation of terms only allow 3 named variables. This is to avoid needing first class maps from symbols to numbers to represent the environment (which is doable but complicated by accident in Souffle datalog. Other datalogs support this more easily.). Instead we can use a fixed sized record to represent the environment.</p>
+<pre><code class="language-souffle">.type AExpr = Add {x : AExpr, y : AExpr} | Lit {n : number} | X {} | Y {} | Z {}
+.type Env = [x : number, y : number, z : number]
+
+.decl aexpr(e : AExpr)
+aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
+
+.decl env(e : Env)
+
+.decl eval(e : AExpr, rho : Env, v : number)
+eval(e, rho, vx + vy) :- aexpr(e), e = $Add(x,y), eval(x,rho,vx), eval(y,rho,vy).
+eval(e, rho, n) :- env(rho), aexpr(e), e = $Lit(n).
+eval($X(),rho,x) :- env(rho), rho = [x,_y,_z].
+eval($Y(),rho,y) :- env(rho), rho = [_x,y,_z].
+eval($Z(),rho,z) :- env(rho), rho = [_x,_y,z].
+
+aexpr($Add($Add($Lit(1), $Lit(2)), $X())).
+env([1,2,3]).
+.output eval(IO=stdout)
+</code></pre>
+<p>Now let us constrast this with a different approach of describing states which might have been your first inclination.</p>
+<pre><code>.type AExpr = Add {x : AExpr, y : AExpr} | Lit {n : number} | Var {x : symbol}
+
+.decl aexpr(e : AExpr)
+aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
+
+.decl env(x : symbol, v : number)
+
+
+</code></pre>
+<p>Another thing we can do in this simple language is a valueset analysis. Given the set of possible values</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="aggregates-lattices-and-subsumptions"><a class="header" href="#aggregates-lattices-and-subsumptions">Aggregates, Lattices, and Subsumptions</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="logic-programs-and-magic-set"><a class="header" href="#logic-programs-and-magic-set">Logic Programs and Magic Set</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="imperative-programs"><a class="header" href="#imperative-programs">Imperative Programs</a></h1>
+<p>Imperative programs proceed via a manipulation of state.</p>
+<p>In essence, a stateful program can be emulated in datalog by recursively transforming one state to the next.</p>
+<pre><code>state(x,y,z) :- state(x,y,z).
+</code></pre>
+<p>It is desirable from a modelling perspective to separate out a notion of position in the program as special. Example of position include the state in a state machine, the program counter in assembly, or the statement label in a typical imperative program.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="functional-programs"><a class="header" href="#functional-programs">Functional Programs</a></h1>
+<p>There are two issues to tackle when converting functional programs to datalog.</p>
+<ol>
+<li>Datalog deals mostly in relations not functions.</li>
+<li>Datalog is bottom up, whereas functional programs are demand driven (they only compute functions that are called).</li>
+</ol>
+<p>Functional programs can be converted to logic programs by making the return value a parameter to the relation. A function is a subcase of relations in which the last column is determined by the initial columns.</p>
+<p>For example, the function <code>factorial(n)</code> becomes the relation <code>factorial(n,res)</code> or <code>append(x,y)</code> becomes <code>append(x,y,res)</code>.</p>
+<pre><code class="language-souffle">.decl factorial(n : unsigned, res : unsigned)
+factorial(0,1).
+factorial(1,1).
+factorial(n+1, (n + 1) * m) :- factorial(n, m), n &lt; 10.
+.output factorial(IO=stdout)
+</code></pre>
+<p>A priori I have chosen to stop the process at <code>n = 10</code>. This is fine if we can know at compile time what answers we need computed. What if we don't though? Then we need to write the function in a demand driven style.</p>
+<h2 id="demand"><a class="header" href="#demand">Demand</a></h2>
+<h2 id="the-stack"><a class="header" href="#the-stack">The Stack</a></h2>
+<p>In the actual implementation of a functional program, there exists some data structure to keep track of who needs what results and what to do with them next. This is typically achieved via a stack, which records return addresses and records the needed state of the call site.</p>
+<p>The stack is an implicit data structure that most languages maintain for you, but it is useful to note sometime that it is there.</p>
+<p>This same observation is useful in other programming contexts. It is sometimes relatively wasteful to use the general purpose function call mechanism. You can convert a recursive function call into a loop and maintain that analog of your own stack for efficiency purposes.</p>
+<p>Datalog does not have an implicit stack. If you want such a thing, you must build it.</p>
 <h1 id="macros"><a class="header" href="#macros">Macros</a></h1>
+<p>Souffle datalog by default offers C preprocesor macros. These are useful for defining simple functions.</p>
+<h1 id="inline-relations"><a class="header" href="#inline-relations">Inline relations</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="graphs"><a class="header" href="#graphs">Graphs</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sql"><a class="header" href="#sql">SQL</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="implementations"><a class="header" href="#implementations">Implementations</a></h1>
+<ul>
+<li>Flix</li>
+<li>Rel</li>
+</ul>
 
                     </main>
 

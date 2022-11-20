@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">2.</strong> Recursion</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">4.</strong> Negation</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">5.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded "><a href="analysis.html" class="active"><strong aria-hidden="true">6.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">7.</strong> Aggregates, Lattices, and Subsumptions</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">8.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">9.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">10.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded "><a href="analysis.html" class="active"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumptions</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">7.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">10.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">11.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">12.</strong> Implementations</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -143,6 +143,73 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="program-analysis"><a class="header" href="#program-analysis">Program Analysis</a></h1>
+<h2 id="pure-expressions"><a class="header" href="#pure-expressions">Pure Expressions</a></h2>
+<h3 id="huttons-razor"><a class="header" href="#huttons-razor">Hutton's Razor</a></h3>
+<p>There is a very solid rule thumb called Hutton's razor that you should try out programming language techqniues on a simple language of only addition and constants first. You can learn a lot.</p>
+<p>The first thing to do with such expressions is of course to evaluate them.</p>
+<pre><code class="language-souffle">.type AExpr = Add {x : AExpr, y : AExpr} | Lit {n : number}
+
+.decl aexpr(e : AExpr)
+aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
+
+.decl eval(e : AExpr, v : number)
+eval(e, vx + vy) :- aexpr(e), e = $Add(x,y), eval(x,vx), eval(y,vy).
+eval(e, n) :- aexpr(e), e = $Lit(n).
+
+aexpr($Add($Add($Lit(1), $Lit(2)), $Lit(3))).
+.output eval(IO=stdout)
+</code></pre>
+<h3 id="adding-variables"><a class="header" href="#adding-variables">Adding Variables</a></h3>
+<p>One direction extend the language to make it more interesting is to add variables. Nothing needs to change, but now eval becomes a partial relation, only filled in for subterms that do not contain the variables. <code>eval</code> now has the flavor of a constant propagation analysis. By using the results of the analysis, we can simplify the original expressions. Since <code>eval</code> does not depend on <code>simplify</code>, we can check whether or not an entry in <code>eval</code> exists for <code>e</code> using negation.</p>
+<pre><code class="language-souffle">.type AExpr = Add {x : AExpr, y : AExpr} | Lit {n : number} | Var {v : symbol}
+
+.decl aexpr(e : AExpr)
+aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
+
+.decl eval(e : AExpr, v : number)
+eval(e, vx + vy) :- aexpr(e), e = $Add(x,y), eval(x,vx), eval(y,vy).
+eval(e, n) :- aexpr(e), e = $Lit(n).
+
+.decl simplify(orig : AExpr, simp : AExpr)
+simplify(e,$Lit(v)) :- eval(e, v).
+simplify(e,e) :- aexpr(e), !eval(e, _), e = $Var(x).
+simplify(e,$Add(x1,y1)) :- aexpr(e), !eval(e, _), e = $Add(x,y), simplify(x,x1), simplify(y,y1).
+
+aexpr($Add($Add($Lit(1), $Lit(2)), $Var(&quot;x&quot;))).
+.output simplify(IO=stdout)
+</code></pre>
+<h3 id="evaluation-in-environments"><a class="header" href="#evaluation-in-environments">Evaluation in Environments</a></h3>
+<p>We can also evaluate the language in an environment. I'm going to change my representation of terms only allow 3 named variables. This is to avoid needing first class maps from symbols to numbers to represent the environment (which is doable but complicated by accident in Souffle datalog. Other datalogs support this more easily.). Instead we can use a fixed sized record to represent the environment.</p>
+<pre><code class="language-souffle">.type AExpr = Add {x : AExpr, y : AExpr} | Lit {n : number} | X {} | Y {} | Z {}
+.type Env = [x : number, y : number, z : number]
+
+.decl aexpr(e : AExpr)
+aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
+
+.decl env(e : Env)
+
+.decl eval(e : AExpr, rho : Env, v : number)
+eval(e, rho, vx + vy) :- aexpr(e), e = $Add(x,y), eval(x,rho,vx), eval(y,rho,vy).
+eval(e, rho, n) :- env(rho), aexpr(e), e = $Lit(n).
+eval($X(),rho,x) :- env(rho), rho = [x,_y,_z].
+eval($Y(),rho,y) :- env(rho), rho = [_x,y,_z].
+eval($Z(),rho,z) :- env(rho), rho = [_x,_y,z].
+
+aexpr($Add($Add($Lit(1), $Lit(2)), $X())).
+env([1,2,3]).
+.output eval(IO=stdout)
+</code></pre>
+<p>Now let us constrast this with a different approach of describing states which might have been your first inclination.</p>
+<pre><code>.type AExpr = Add {x : AExpr, y : AExpr} | Lit {n : number} | Var {x : symbol}
+
+.decl aexpr(e : AExpr)
+aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
+
+.decl env(x : symbol, v : number)
+
+
+</code></pre>
+<p>Another thing we can do in this simple language is a valueset analysis. Given the set of possible values</p>
 
                     </main>
 

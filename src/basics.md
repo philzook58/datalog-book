@@ -11,7 +11,15 @@ Souffle Datalog has a number of basic built in types
 - `unsigned` is unsigned integers
 - `float` are floating point numbers
 
-Facts are inserted into the database by "calling" the table wit values for the columns. 
+Here's an example declaration
+
+```souffle
+.decl sausages(maker : symbol, difference : number, count : unsigned, inches : float)
+```
+
+## Facts
+
+Facts are inserted into the database by "calling" the table with values for the columnsc followed by a period. 
 This is the analog of a `INSERT INTO mytable FROM VALUES ("42",-42,42,42.1);` statement in SQL.
 
 Tables in Souffle datalog have set semantics, meaning duplicate rows are coalesced into a single row.
@@ -29,11 +37,14 @@ mytable("Hi", -47, 7331, 11.1).
 this_table_wont_print("hidden").
 ```
 
-The simplistic syntax for insertion of facts is nice, but datalog rules are where it shines. 
-Rules describe how new facts can be derived from the already known database of facts. 
+## Rules
+The simplistic syntax for insertion of facts is nice, but datalog rules are where it shines.
+
+Rules describe how new facts can be derived from the already known database of facts. Sometimes the initial facts are called the intensional database (IDB) and the derived facts are called the extensional database (EDB).
+
 They have a right hand side know as a clause which corresponds roughly to a `SELECT` query and left hand side known as a head which corresponds to an `INSERT`. Facts can be seen as a rule with an empty unconditional body.
 
-An SQL style query can be encoded by saving the result to a table and outputting this table.
+An SQL style query can be encoded by making a rule whose body corresponds to the query and saves the result to a table in the head.
 
 ```souffle
 .decl foo(x : symbol, y : symbol)
@@ -41,22 +52,24 @@ foo("a","a").
 foo("b","a").
 
 .decl myquery(x : symbol)
-myquery(a) :- foo(a,a). 
+myquery(a) :- foo(x,x). 
 .output myquery(IO=stdout)
 ```
 
-There is something to be said about examples involving family. This is a concept we primally understand (hence the popularity of the Fast and Furious franchise). The very word relation
+## Recursion
+Ok, rules are great, but what is _really_ great are recursive rules.
 
-We can use rules to extract grandparent tables from parent tables.
+There is something to be said about examples involving family. This is a concept we primally understand (hence the popularity of the Fast and Furious franchise).
+
+We can use rules to extract grandparent, greatgrandparent, and greatgreatgrandparent tables from parent tables.
 
 ```
-parent
 grandparent(a,c) :- parent(a,b), parent(b,c).
 greatgrandparent(a,c) :- parent(a,b), grandparent(b,c).
 greatgreatgrandparent(a,c) :- parent(a,b), greatgrandparent(b,c).
 ```
 
-There is a theme here, Any person deep in our family tree is an ancestor. To describe this concept, we need to use a recursive rule.
+There is a theme here, a pattern to extract. Any person deep in our family tree is our ancestor. To describe this concept, we can use a recursive rule. Our parent is our ancestor, and the parent of our ancestor is also an ancestor.
 
 ```
 ancestor(a,b) :- parent(a,b).
