@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Negation - Datalog Comin&#x27; Right At Ya!</title>
+        <title>Bibliography - Datalog Comin&#x27; Right At Ya!</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html" class="active"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="prolog.html"><strong aria-hidden="true">7.</strong> Prolog</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Modelling State</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">10.</strong> Logic and Types</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">12.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">13.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">14.</strong> Implementations</a></li><li class="chapter-item expanded "><a href="bibliography.html"><strong aria-hidden="true">15.</strong> Bibliography</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="prolog.html"><strong aria-hidden="true">7.</strong> Prolog</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Modelling State</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">10.</strong> Logic and Types</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">12.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">13.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">14.</strong> Implementations</a></li><li class="chapter-item expanded "><a href="bibliography.html" class="active"><strong aria-hidden="true">15.</strong> Bibliography</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,37 +144,15 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="negation"><a class="header" href="#negation">Negation</a></h1>
-<p>A fact not existing in the database doesn't necessarily mean it won't eventually be derived. This simple fact makes negation tricky.</p>
-<h1 id="monotonicity"><a class="header" href="#monotonicity">Monotonicity</a></h1>
-<p>Datalog rules as described have the property that once a fact is derived, it is never removed from the database. The set of facts keeps growing. \( DB_{n} \subset DB_{n+1} \).</p>
-<p>Why should we care?</p>
-<p>Programs can be viewed at different levels of detail. Certainly we all know that renaming the variables in a program does not really change it. Sometimes reordering some assignments and lifing things out of loops and removing redundant or dead computations don't change our programs in some sense.
-There is an intent behind most programs and these low level changes don't really change the intent. A factorial function returns factorial regardless if it uses a loop or recursion or SIMD instructions or whatever.
-When we can make clear in our programs what is intent and what is details that don't really matter that much, the compiler or runtime environment is free to make choices to change the irrelevant details. This is a core behind the idea of declarative languages.</p>
-<p>When I write a datalog program, I do have a vague operational model in my head of how it executes. This may not at all be the case.</p>
-<h1 id="forall"><a class="header" href="#forall">Forall</a></h1>
-<p>In classical logic, you can compile some of the logical operations into simpler forms.
-the universal quantifier $\forall x, P(x)$ is the same as $\not \exists x\not P(x)$
-Implication $a \rightarrow b = \neg a \lor b $.</p>
-<p>Forall is a thing that it is tempting to talk about when modelling problems
-&quot;If for every predecessor such and such exists, then foo is true&quot;.</p>
-<p>The natural forall datalog has is that surrounding the entire clause.</p>
-<p>The natural exists is </p>
-<p>See notes from that course.
-See <a href="https://www.swi-prolog.org/pldoc/man?predicate=forall/2">prolog forall</a> This also implements a forall using negation</p>
-
+                        
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="basics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="implementations.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="adt.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -182,13 +160,10 @@ See <a href="https://www.swi-prolog.org/pldoc/man?predicate=forall/2">prolog for
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="basics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="implementations.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="adt.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

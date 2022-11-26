@@ -1,5 +1,14 @@
 # Aggregates, Lattices, and Subsumption
 
+# Aggregates
+Aggregates include sum, count, min, max, mean, multiplication. They are summary data taken from multiple entries of a relation
+
+Traditionally, aggregates are determined after the fixed point is reached in the datalog rule iteration for the relations that you are going to take the aggregate ovr. In this sense, aggregation is a relative of negation, which also requires the fixed point before it can determine a fact with never be dervied.
+
+Negation, exists and bounded universal quantification (`p = forall x, foo(x) => bar(x)` ~ `not_p :- foo(x), !bar(x).`) are all arguably also aggregates.
+
+Reification into a first class set is also an aggregate
+
 # Lattices
 A lattice is a very useful mathematical concept for computer science. The common applications involve a data structure or data type that have some notion of combination.
 
@@ -10,6 +19,11 @@ The algebraic laws of the lattice are
 If a computer system can know it's ok to do these things are still get the same results, significant oppurtunities for optimization present themselves. One becomes free for example to perform operations in a distributed way and combne them back together in whatever order or duplication the results arrive in. 
 
 Lattices often have the feel of some bound getting tighter, information being gained, or a structure becoming more defined.
+
+Lattices can be seen as an online form of aggregates. The lattice properties allow the to be computer at the same time as the relations themselves rather than in a subsequent strata. Sometimes this is called recursive aggregates. Try figuring out how to do `sum` as a lattice though. It's tough.
+
+
+
 
 Examples include:
     - integers combined under maximum 
@@ -34,10 +48,28 @@ Examples include:
 
 When you observe a lattice value, you should not say that lattice value _is_ the value you see, rather the lattice value is a lower bound upon it's eventual fixed point value. A more general statement is that observations can correspond to filters, upwards closed sets of lattices.
 
-# Aggregates
-Aggregates include sum, count, multiplication
 
-Traditionally, aggregates are determined after the fixed point is reached in the datalog rule iteration. In this sense, aggregation is a relative of negation, which also requires the fixed point before it can determine a fact with never be dervied.
+All things seem to come back to the path example. A good example for the use of lattices is the shortest path. This is in essence running the [bellman ford algorithm](https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm)
+
+```scheme
+(function path (String String) i64 :merge (min old new))
+(function edge (String String) i64)
+
+(set (edge 1 2) 10)
+(set (edge 2 3) 11)
+(set (edge 1 3) 42)
+(rule ((= cost (edge x y))) 
+      ((set (path x y) cost)))
+
+(rule ((= c1 (edge x y)) (= c2 (path y z))) 
+      ((set (path x z) (+ c1 c2))))
+
+(run 10)
+(print path)
+```
+
+
+It's interesting to note that lattices in a certain sense do not add anything to the language. If instead of keeping just the join of the lattice value, we kept all of them, we could do the join as an aggregate at a later strata. However, if there is a loop in your graph, there will be an infinite number of possible costs, and the program will not terminate anymore. So lattices are a performance optimization and a termination improvement (improving termination is arguably increased descriptive power though).
 
 
 # Subsumption

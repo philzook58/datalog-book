@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html" class="active"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="prolog.html"><strong aria-hidden="true">7.</strong> Prolog</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Modelling State</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">10.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">11.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html" class="active"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="prolog.html"><strong aria-hidden="true">7.</strong> Prolog</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Modelling State</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">10.</strong> Logic and Types</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">12.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">13.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">14.</strong> Implementations</a></li><li class="chapter-item expanded "><a href="bibliography.html"><strong aria-hidden="true">15.</strong> Bibliography</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -145,6 +145,11 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="aggregates-lattices-and-subsumption"><a class="header" href="#aggregates-lattices-and-subsumption">Aggregates, Lattices, and Subsumption</a></h1>
+<h1 id="aggregates"><a class="header" href="#aggregates">Aggregates</a></h1>
+<p>Aggregates include sum, count, min, max, mean, multiplication. They are summary data taken from multiple entries of a relation</p>
+<p>Traditionally, aggregates are determined after the fixed point is reached in the datalog rule iteration for the relations that you are going to take the aggregate ovr. In this sense, aggregation is a relative of negation, which also requires the fixed point before it can determine a fact with never be dervied.</p>
+<p>Negation, exists and bounded universal quantification (<code>p = forall x, foo(x) =&gt; bar(x)</code> ~ <code>not_p :- foo(x), !bar(x).</code>) are all arguably also aggregates.</p>
+<p>Reification into a first class set is also an aggregate</p>
 <h1 id="lattices"><a class="header" href="#lattices">Lattices</a></h1>
 <p>A lattice is a very useful mathematical concept for computer science. The common applications involve a data structure or data type that have some notion of combination.</p>
 <p>The algebraic laws of the lattice are</p>
@@ -154,6 +159,7 @@
 </ul>
 <p>If a computer system can know it's ok to do these things are still get the same results, significant oppurtunities for optimization present themselves. One becomes free for example to perform operations in a distributed way and combne them back together in whatever order or duplication the results arrive in. </p>
 <p>Lattices often have the feel of some bound getting tighter, information being gained, or a structure becoming more defined.</p>
+<p>Lattices can be seen as an online form of aggregates. The lattice properties allow the to be computer at the same time as the relations themselves rather than in a subsequent strata. Sometimes this is called recursive aggregates. Try figuring out how to do <code>sum</code> as a lattice though. It's tough.</p>
 <p>Examples include:
 - integers combined under maximum 
 - integers combined under minimum
@@ -171,9 +177,23 @@
 (print best)
 </code></pre>
 <p>When you observe a lattice value, you should not say that lattice value <em>is</em> the value you see, rather the lattice value is a lower bound upon it's eventual fixed point value. A more general statement is that observations can correspond to filters, upwards closed sets of lattices.</p>
-<h1 id="aggregates"><a class="header" href="#aggregates">Aggregates</a></h1>
-<p>Aggregates include sum, count, multiplication</p>
-<p>Traditionally, aggregates are determined after the fixed point is reached in the datalog rule iteration. In this sense, aggregation is a relative of negation, which also requires the fixed point before it can determine a fact with never be dervied.</p>
+<p>All things seem to come back to the path example. A good example for the use of lattices is the shortest path. This is in essence running the <a href="https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm">bellman ford algorithm</a></p>
+<pre><code class="language-scheme">(function path (String String) i64 :merge (min old new))
+(function edge (String String) i64)
+
+(set (edge 1 2) 10)
+(set (edge 2 3) 11)
+(set (edge 1 3) 42)
+(rule ((= cost (edge x y))) 
+      ((set (path x y) cost)))
+
+(rule ((= c1 (edge x y)) (= c2 (path y z))) 
+      ((set (path x z) (+ c1 c2))))
+
+(run 10)
+(print path)
+</code></pre>
+<p>It's interesting to note that lattices in a certain sense do not add anything to the language. If instead of keeping just the join of the lattice value, we kept all of them, we could do the join as an aggregate at a later strata. However, if there is a loop in your graph, there will be an infinite number of possible costs, and the program will not terminate anymore. So lattices are a performance optimization and a termination improvement (improving termination is arguably increased descriptive power though).</p>
 <h1 id="subsumption"><a class="header" href="#subsumption">Subsumption</a></h1>
 <p>Souffle has a very powerful feature called subsumption, which is a form of conditional deletion.</p>
 <h4 id="max-min"><a class="header" href="#max-min">max min</a></h4>

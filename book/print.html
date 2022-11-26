@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="prolog.html"><strong aria-hidden="true">7.</strong> Prolog</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Modelling State</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">10.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">11.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="prolog.html"><strong aria-hidden="true">7.</strong> Prolog</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Modelling State</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">10.</strong> Logic and Types</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">12.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">13.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">14.</strong> Implementations</a></li><li class="chapter-item expanded "><a href="bibliography.html"><strong aria-hidden="true">15.</strong> Bibliography</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -231,6 +231,24 @@ Easy Sudoku
 matrix logic puzzles.
 first cousins</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="negation"><a class="header" href="#negation">Negation</a></h1>
+<p>A fact not existing in the database doesn't necessarily mean it won't eventually be derived. This simple fact makes negation tricky.</p>
+<h1 id="monotonicity"><a class="header" href="#monotonicity">Monotonicity</a></h1>
+<p>Datalog rules as described have the property that once a fact is derived, it is never removed from the database. The set of facts keeps growing. \( DB_{n} \subset DB_{n+1} \).</p>
+<p>Why should we care?</p>
+<p>Programs can be viewed at different levels of detail. Certainly we all know that renaming the variables in a program does not really change it. Sometimes reordering some assignments and lifing things out of loops and removing redundant or dead computations don't change our programs in some sense.
+There is an intent behind most programs and these low level changes don't really change the intent. A factorial function returns factorial regardless if it uses a loop or recursion or SIMD instructions or whatever.
+When we can make clear in our programs what is intent and what is details that don't really matter that much, the compiler or runtime environment is free to make choices to change the irrelevant details. This is a core behind the idea of declarative languages.</p>
+<p>When I write a datalog program, I do have a vague operational model in my head of how it executes. This may not at all be the case.</p>
+<h1 id="forall"><a class="header" href="#forall">Forall</a></h1>
+<p>In classical logic, you can compile some of the logical operations into simpler forms.
+the universal quantifier $\forall x, P(x)$ is the same as $\not \exists x\not P(x)$
+Implication $a \rightarrow b = \neg a \lor b $.</p>
+<p>Forall is a thing that it is tempting to talk about when modelling problems
+&quot;If for every predecessor such and such exists, then foo is true&quot;.</p>
+<p>The natural forall datalog has is that surrounding the entire clause.</p>
+<p>The natural exists is </p>
+<p>See notes from that course.
+See <a href="https://www.swi-prolog.org/pldoc/man?predicate=forall/2">prolog forall</a> This also implements a forall using negation</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="algebraic-data-types"><a class="header" href="#algebraic-data-types">Algebraic Data Types</a></h1>
 <p>Algebraic data types are a programming language feature that are very useful for describing tree-like structures.</p>
 <pre><code class="language-souffle">.type IntList = Nil {} | Cons {hd : number, tl : IntList}
@@ -347,6 +365,11 @@ aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
 </code></pre>
 <p>Another thing we can do in this simple language is a valueset analysis. Given the set of possible values</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="aggregates-lattices-and-subsumption"><a class="header" href="#aggregates-lattices-and-subsumption">Aggregates, Lattices, and Subsumption</a></h1>
+<h1 id="aggregates"><a class="header" href="#aggregates">Aggregates</a></h1>
+<p>Aggregates include sum, count, min, max, mean, multiplication. They are summary data taken from multiple entries of a relation</p>
+<p>Traditionally, aggregates are determined after the fixed point is reached in the datalog rule iteration for the relations that you are going to take the aggregate ovr. In this sense, aggregation is a relative of negation, which also requires the fixed point before it can determine a fact with never be dervied.</p>
+<p>Negation, exists and bounded universal quantification (<code>p = forall x, foo(x) =&gt; bar(x)</code> ~ <code>not_p :- foo(x), !bar(x).</code>) are all arguably also aggregates.</p>
+<p>Reification into a first class set is also an aggregate</p>
 <h1 id="lattices"><a class="header" href="#lattices">Lattices</a></h1>
 <p>A lattice is a very useful mathematical concept for computer science. The common applications involve a data structure or data type that have some notion of combination.</p>
 <p>The algebraic laws of the lattice are</p>
@@ -356,6 +379,7 @@ aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
 </ul>
 <p>If a computer system can know it's ok to do these things are still get the same results, significant oppurtunities for optimization present themselves. One becomes free for example to perform operations in a distributed way and combne them back together in whatever order or duplication the results arrive in. </p>
 <p>Lattices often have the feel of some bound getting tighter, information being gained, or a structure becoming more defined.</p>
+<p>Lattices can be seen as an online form of aggregates. The lattice properties allow the to be computer at the same time as the relations themselves rather than in a subsequent strata. Sometimes this is called recursive aggregates. Try figuring out how to do <code>sum</code> as a lattice though. It's tough.</p>
 <p>Examples include:
 - integers combined under maximum 
 - integers combined under minimum
@@ -373,9 +397,23 @@ aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
 (print best)
 </code></pre>
 <p>When you observe a lattice value, you should not say that lattice value <em>is</em> the value you see, rather the lattice value is a lower bound upon it's eventual fixed point value. A more general statement is that observations can correspond to filters, upwards closed sets of lattices.</p>
-<h1 id="aggregates"><a class="header" href="#aggregates">Aggregates</a></h1>
-<p>Aggregates include sum, count, multiplication</p>
-<p>Traditionally, aggregates are determined after the fixed point is reached in the datalog rule iteration. In this sense, aggregation is a relative of negation, which also requires the fixed point before it can determine a fact with never be dervied.</p>
+<p>All things seem to come back to the path example. A good example for the use of lattices is the shortest path. This is in essence running the <a href="https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm">bellman ford algorithm</a></p>
+<pre><code class="language-scheme">(function path (String String) i64 :merge (min old new))
+(function edge (String String) i64)
+
+(set (edge 1 2) 10)
+(set (edge 2 3) 11)
+(set (edge 1 3) 42)
+(rule ((= cost (edge x y))) 
+      ((set (path x y) cost)))
+
+(rule ((= c1 (edge x y)) (= c2 (path y z))) 
+      ((set (path x z) (+ c1 c2))))
+
+(run 10)
+(print path)
+</code></pre>
+<p>It's interesting to note that lattices in a certain sense do not add anything to the language. If instead of keeping just the join of the lattice value, we kept all of them, we could do the join as an aggregate at a later strata. However, if there is a loop in your graph, there will be an infinite number of possible costs, and the program will not terminate anymore. So lattices are a performance optimization and a termination improvement (improving termination is arguably increased descriptive power though).</p>
 <h1 id="subsumption"><a class="header" href="#subsumption">Subsumption</a></h1>
 <p>Souffle has a very powerful feature called subsumption, which is a form of conditional deletion.</p>
 <h4 id="max-min"><a class="header" href="#max-min">max min</a></h4>
@@ -818,6 +856,97 @@ _factorial(10).
 <p>Souffle datalog by default offers C preprocesor macros. These are useful for defining simple functions.</p>
 <h1 id="inline-relations"><a class="header" href="#inline-relations">Inline Relations</a></h1>
 <p>Souffle datalog offers a feature of inline relations. This performs top down resolution at compile time, but has to terminate, so inline relations cannot be recursively defined.. This is mainly useful for simple complex but non recursive definitions.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="types-and-logic"><a class="header" href="#types-and-logic">Types and Logic</a></h1>
+<p>The clauses of prolog and datalog can be read as inference rules.</p>
+<p>\( \AxiomC edge(1,2)  )</p>
+<p>\( edge(X,Y) \UnaryInfC path(X,Y)  \)</p>
+<p>\( edge(X,Y) path(Y,Z) \BinaryInfC path(X,Z) \) </p>
+<p>In this analogy, facts are not quite associate with propositions, but actually with <em>judgements</em>.</p>
+<p>Some other judgements you may see around in computer science literature:</p>
+<p>I am constantly thrown by infix notation for judgements and relations.</p>
+<p>( \Gamma \turnstile  e : A ) 
+<code>.decl hastype(ctx, expr, type)</code></p>
+<p>( {pre} cmd {post} ) 
+<code>.decl hoare(pre, cmd, post)</code></p>
+<p><code>.decl wellformed(term)</code></p>
+<p>\( e \downarrow v \)
+<code>.decl evals_to(expr, value)</code></p>
+<p>\( A == B type\)
+\( \Gamma \turnstile A == B type\)</p>
+<p>Frank Pfenning notes</p>
+<h1 id="provenance"><a class="header" href="#provenance">Provenance</a></h1>
+<p>Provenance in datalog is tracking how a fact was derived. Conceptually, every fact could have an entire proof tree datastructure storing every fact and rule application that occurred to find that fact from th initial database, but this is not necessary.</p>
+<p>This is a similar situation to minimum path finding and other dynamic programming problems. One does not need to store the entire solution at every node because once you have built the table containing minimum costs, a simple search is sufficient to reconstruct the solution in a top down, demand driven manner.</p>
+<p>Conceptually, the proof object behind the edge-path example is any path connecting the two nodes. This is an entirely down to earth object, representable as a list of vertices. If you are ever scared of the idea of a proof object, this is good to keep in mind.</p>
+<h1 id="contexts"><a class="header" href="#contexts">Contexts</a></h1>
+<p>Many judgements are hypothetical. The infix syntax makes this seem mysterious, but it is just another field.</p>
+<p>What is a pain is that the context is very often considered to be a set, and that judgementw using weaker contexts (less assumptions) should subsume stronger uses of contexts. Not all uses of contexts actualy obey these properties, see substructural logics like linear logic.</p>
+<h1 id="type-checking"><a class="header" href="#type-checking">Type Checking</a></h1>
+<p>Related of course to the above.
+See the table on page 3 of <a href="https://arxiv.org/pdf/1908.05839.pdf">this bidirectional typing tutorial</a>. This is more or less a transcription of these rules to datalog. It is interesting how explicit the moding and forward / backward reasoning becomes. <code>has</code> becomes a seperate entity from <code>infer</code> and <code>check</code>. The latter two are top down / backwards requests for proofs, whereas <code>has</code> is a bottom up / forward reasoning assertion of truth.</p>
+<pre><code class="language-souffle">.type type = Unit {} | Arr {a :  type, b : type}
+.type term = TT {} | Lam {b : term} | App {f : term, x : term} | Var {n : number} | Annot {t : term, ty : type}
+.type ctx = [ ty:type, g : ctx]
+
+.decl has(g : ctx, t : term , ty : type) // bottom up
+.decl infer(g : ctx, t : term) // mode -+ topdown
+.decl check(g : ctx, t : term, ty : type) // topdown
+
+// variable.
+// base case
+has([ty,ctx], $Var(0), ty) :- infer([ty,ctx], $Var(0)).
+// recursive case
+infer(ctx, $Var(n-1)) :- infer([_ty,ctx], $Var(n)), n &gt; 0.
+has([ty,ctx], $Var(n), ty2) :- infer([ty,ctx], $Var(n)), has(ctx, $Var(n-1), ty2).
+
+// infer instead of check if possible
+infer(ctx,t) :- check(ctx,t,_ty).
+
+// subtyping or equality rule
+// has(ctx, t, ty) :- check(ctx,t,ty), has(ctx,t,ty2), sub(ty,ty2).
+
+// annotation rule
+check(ctx, t, ty) :- infer(ctx, $Annot(t,ty)).
+
+// unit rule
+has(ctx,$TT(), $Unit()) :- check(ctx, $TT(), $Unit()).
+
+// Lam case
+check([a, ctx], body, b) :- check(ctx, $Lam(body), $Arr(a,b)).
+has(ctx, $Lam(body), $Arr(a,b)) :- check(ctx, $Lam(body), $Arr(a,b)), has([a, ctx], body, b).
+
+// App case.
+infer(ctx, f) :- infer(ctx, $App(f,_x)).
+check(ctx, x, a) :- infer(ctx, $App(f,x)), has(ctx, f, $Arr(a,_b)).
+has(ctx, $App(f,x), b) :- infer(ctx, $App(f,x)), has(ctx, f, $Arr(a,b)), has(ctx, x, a).
+
+check(nil, $Lam($Lam($App($Var(1),$Var(0)))), 
+      $Arr($Arr($Unit(), $Unit()), $Arr($Unit(), $Unit()))).
+
+.output has(IO=stdout)
+/*
+.decl check_top(t : term, ty : type)
+check(nil,t,ty):- check_top(t,ty).
+.decl has_top(t : term, ty : type)
+has_top(t,ty ):- has(nil, t, ty).
+
+
+check_top($TT(), $Unit()).
+check_top($Lam($Var(0)), $Arr($Unit(),$Unit())).
+check_top($Lam($Lam($Var(0))), $Arr($Unit(),$Unit())).
+check_top($Lam($Lam($Var(0))), $Arr($Unit(),$Arr($Unit(),$Unit()))).
+check_top($Lam($Lam($Var(1))), $Arr($Unit(),$Arr($Unit(),$Unit()))).
+check_top($Lam($Lam($Var(2))), $Arr($Unit(),$Arr($Unit(),$Unit()))).
+check_top($App($Lam($Var(0)), $TT()), $Unit()).
+
+check_top($Lam($Lam($App($Var(1),$Var(0)))), 
+      $Arr($Arr($Unit(), $Unit()), $Arr($Unit(), $Unit()))).
+*/
+//.output check(IO=stdout)
+//.output infer(IO=stdout)
+//.output has(IO=stdout)
+//.output has_top(IO=stdout)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="graphs"><a class="header" href="#graphs">Graphs</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="egglog-2"><a class="header" href="#egglog-2">Egglog</a></h1>
 <pre><code class="language-scheme editable runnable">
@@ -1570,7 +1699,7 @@ rich semantic analyses \textit{a la} Datalog.}
 <li>Flix</li>
 <li>Rel</li>
 </ul>
-
+<div style="break-before: page; page-break-before: always;"></div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

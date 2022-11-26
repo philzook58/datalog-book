@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Negation - Datalog Comin&#x27; Right At Ya!</title>
+        <title>Logic and Types - Datalog Comin&#x27; Right At Ya!</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html" class="active"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="prolog.html"><strong aria-hidden="true">7.</strong> Prolog</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Modelling State</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">10.</strong> Logic and Types</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">12.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">13.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">14.</strong> Implementations</a></li><li class="chapter-item expanded "><a href="bibliography.html"><strong aria-hidden="true">15.</strong> Bibliography</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="prolog.html"><strong aria-hidden="true">7.</strong> Prolog</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Modelling State</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="logic.html" class="active"><strong aria-hidden="true">10.</strong> Logic and Types</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">11.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">12.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">13.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">14.</strong> Implementations</a></li><li class="chapter-item expanded "><a href="bibliography.html"><strong aria-hidden="true">15.</strong> Bibliography</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,35 +144,107 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="negation"><a class="header" href="#negation">Negation</a></h1>
-<p>A fact not existing in the database doesn't necessarily mean it won't eventually be derived. This simple fact makes negation tricky.</p>
-<h1 id="monotonicity"><a class="header" href="#monotonicity">Monotonicity</a></h1>
-<p>Datalog rules as described have the property that once a fact is derived, it is never removed from the database. The set of facts keeps growing. \( DB_{n} \subset DB_{n+1} \).</p>
-<p>Why should we care?</p>
-<p>Programs can be viewed at different levels of detail. Certainly we all know that renaming the variables in a program does not really change it. Sometimes reordering some assignments and lifing things out of loops and removing redundant or dead computations don't change our programs in some sense.
-There is an intent behind most programs and these low level changes don't really change the intent. A factorial function returns factorial regardless if it uses a loop or recursion or SIMD instructions or whatever.
-When we can make clear in our programs what is intent and what is details that don't really matter that much, the compiler or runtime environment is free to make choices to change the irrelevant details. This is a core behind the idea of declarative languages.</p>
-<p>When I write a datalog program, I do have a vague operational model in my head of how it executes. This may not at all be the case.</p>
-<h1 id="forall"><a class="header" href="#forall">Forall</a></h1>
-<p>In classical logic, you can compile some of the logical operations into simpler forms.
-the universal quantifier $\forall x, P(x)$ is the same as $\not \exists x\not P(x)$
-Implication $a \rightarrow b = \neg a \lor b $.</p>
-<p>Forall is a thing that it is tempting to talk about when modelling problems
-&quot;If for every predecessor such and such exists, then foo is true&quot;.</p>
-<p>The natural forall datalog has is that surrounding the entire clause.</p>
-<p>The natural exists is </p>
-<p>See notes from that course.
-See <a href="https://www.swi-prolog.org/pldoc/man?predicate=forall/2">prolog forall</a> This also implements a forall using negation</p>
+                        <h1 id="types-and-logic"><a class="header" href="#types-and-logic">Types and Logic</a></h1>
+<p>The clauses of prolog and datalog can be read as inference rules.</p>
+<p>\( \AxiomC edge(1,2)  )</p>
+<p>\( edge(X,Y) \UnaryInfC path(X,Y)  \)</p>
+<p>\( edge(X,Y) path(Y,Z) \BinaryInfC path(X,Z) \) </p>
+<p>In this analogy, facts are not quite associate with propositions, but actually with <em>judgements</em>.</p>
+<p>Some other judgements you may see around in computer science literature:</p>
+<p>I am constantly thrown by infix notation for judgements and relations.</p>
+<p>( \Gamma \turnstile  e : A ) 
+<code>.decl hastype(ctx, expr, type)</code></p>
+<p>( {pre} cmd {post} ) 
+<code>.decl hoare(pre, cmd, post)</code></p>
+<p><code>.decl wellformed(term)</code></p>
+<p>\( e \downarrow v \)
+<code>.decl evals_to(expr, value)</code></p>
+<p>\( A == B type\)
+\( \Gamma \turnstile A == B type\)</p>
+<p>Frank Pfenning notes</p>
+<h1 id="provenance"><a class="header" href="#provenance">Provenance</a></h1>
+<p>Provenance in datalog is tracking how a fact was derived. Conceptually, every fact could have an entire proof tree datastructure storing every fact and rule application that occurred to find that fact from th initial database, but this is not necessary.</p>
+<p>This is a similar situation to minimum path finding and other dynamic programming problems. One does not need to store the entire solution at every node because once you have built the table containing minimum costs, a simple search is sufficient to reconstruct the solution in a top down, demand driven manner.</p>
+<p>Conceptually, the proof object behind the edge-path example is any path connecting the two nodes. This is an entirely down to earth object, representable as a list of vertices. If you are ever scared of the idea of a proof object, this is good to keep in mind.</p>
+<h1 id="contexts"><a class="header" href="#contexts">Contexts</a></h1>
+<p>Many judgements are hypothetical. The infix syntax makes this seem mysterious, but it is just another field.</p>
+<p>What is a pain is that the context is very often considered to be a set, and that judgementw using weaker contexts (less assumptions) should subsume stronger uses of contexts. Not all uses of contexts actualy obey these properties, see substructural logics like linear logic.</p>
+<h1 id="type-checking"><a class="header" href="#type-checking">Type Checking</a></h1>
+<p>Related of course to the above.
+See the table on page 3 of <a href="https://arxiv.org/pdf/1908.05839.pdf">this bidirectional typing tutorial</a>. This is more or less a transcription of these rules to datalog. It is interesting how explicit the moding and forward / backward reasoning becomes. <code>has</code> becomes a seperate entity from <code>infer</code> and <code>check</code>. The latter two are top down / backwards requests for proofs, whereas <code>has</code> is a bottom up / forward reasoning assertion of truth.</p>
+<pre><code class="language-souffle">.type type = Unit {} | Arr {a :  type, b : type}
+.type term = TT {} | Lam {b : term} | App {f : term, x : term} | Var {n : number} | Annot {t : term, ty : type}
+.type ctx = [ ty:type, g : ctx]
+
+.decl has(g : ctx, t : term , ty : type) // bottom up
+.decl infer(g : ctx, t : term) // mode -+ topdown
+.decl check(g : ctx, t : term, ty : type) // topdown
+
+// variable.
+// base case
+has([ty,ctx], $Var(0), ty) :- infer([ty,ctx], $Var(0)).
+// recursive case
+infer(ctx, $Var(n-1)) :- infer([_ty,ctx], $Var(n)), n &gt; 0.
+has([ty,ctx], $Var(n), ty2) :- infer([ty,ctx], $Var(n)), has(ctx, $Var(n-1), ty2).
+
+// infer instead of check if possible
+infer(ctx,t) :- check(ctx,t,_ty).
+
+// subtyping or equality rule
+// has(ctx, t, ty) :- check(ctx,t,ty), has(ctx,t,ty2), sub(ty,ty2).
+
+// annotation rule
+check(ctx, t, ty) :- infer(ctx, $Annot(t,ty)).
+
+// unit rule
+has(ctx,$TT(), $Unit()) :- check(ctx, $TT(), $Unit()).
+
+// Lam case
+check([a, ctx], body, b) :- check(ctx, $Lam(body), $Arr(a,b)).
+has(ctx, $Lam(body), $Arr(a,b)) :- check(ctx, $Lam(body), $Arr(a,b)), has([a, ctx], body, b).
+
+// App case.
+infer(ctx, f) :- infer(ctx, $App(f,_x)).
+check(ctx, x, a) :- infer(ctx, $App(f,x)), has(ctx, f, $Arr(a,_b)).
+has(ctx, $App(f,x), b) :- infer(ctx, $App(f,x)), has(ctx, f, $Arr(a,b)), has(ctx, x, a).
+
+check(nil, $Lam($Lam($App($Var(1),$Var(0)))), 
+      $Arr($Arr($Unit(), $Unit()), $Arr($Unit(), $Unit()))).
+
+.output has(IO=stdout)
+/*
+.decl check_top(t : term, ty : type)
+check(nil,t,ty):- check_top(t,ty).
+.decl has_top(t : term, ty : type)
+has_top(t,ty ):- has(nil, t, ty).
+
+
+check_top($TT(), $Unit()).
+check_top($Lam($Var(0)), $Arr($Unit(),$Unit())).
+check_top($Lam($Lam($Var(0))), $Arr($Unit(),$Unit())).
+check_top($Lam($Lam($Var(0))), $Arr($Unit(),$Arr($Unit(),$Unit()))).
+check_top($Lam($Lam($Var(1))), $Arr($Unit(),$Arr($Unit(),$Unit()))).
+check_top($Lam($Lam($Var(2))), $Arr($Unit(),$Arr($Unit(),$Unit()))).
+check_top($App($Lam($Var(0)), $TT()), $Unit()).
+
+check_top($Lam($Lam($App($Var(1),$Var(0)))), 
+      $Arr($Arr($Unit(), $Unit()), $Arr($Unit(), $Unit()))).
+*/
+//.output check(IO=stdout)
+//.output infer(IO=stdout)
+//.output has(IO=stdout)
+//.output has_top(IO=stdout)
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="basics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="functional.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="adt.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="graphs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -182,11 +254,11 @@ See <a href="https://www.swi-prolog.org/pldoc/man?predicate=forall/2">prolog for
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="basics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="functional.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="adt.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="graphs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
