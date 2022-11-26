@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html" class="active"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">7.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">10.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">11.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html" class="active"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="prolog.html"><strong aria-hidden="true">7.</strong> Prolog</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Modelling State</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">10.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">11.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,7 +144,197 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="aggregates-lattices-and-subsumptions"><a class="header" href="#aggregates-lattices-and-subsumptions">Aggregates, Lattices, and Subsumptions</a></h1>
+                        <h1 id="aggregates-lattices-and-subsumption"><a class="header" href="#aggregates-lattices-and-subsumption">Aggregates, Lattices, and Subsumption</a></h1>
+<h1 id="lattices"><a class="header" href="#lattices">Lattices</a></h1>
+<p>A lattice is a very useful mathematical concept for computer science. The common applications involve a data structure or data type that have some notion of combination.</p>
+<p>The algebraic laws of the lattice are</p>
+<ul>
+<li>idempotency - It's ok for the system to combine things twice</li>
+<li>commutativity and associativity - It's ok for the system to reorder operations</li>
+</ul>
+<p>If a computer system can know it's ok to do these things are still get the same results, significant oppurtunities for optimization present themselves. One becomes free for example to perform operations in a distributed way and combne them back together in whatever order or duplication the results arrive in. </p>
+<p>Lattices often have the feel of some bound getting tighter, information being gained, or a structure becoming more defined.</p>
+<p>Examples include:
+- integers combined under maximum 
+- integers combined under minimum
+- Intervals
+- Option
+- Sets under intersection or union</p>
+<pre><code class="language-scheme">(function best (String) i64 :merge (max old new)) ; :default 0
+
+(set (best &quot;a&quot;) 10)
+(set (best &quot;a&quot;) 20)
+(set (best &quot;b&quot;) 5)
+;(define bestc (best &quot;c&quot;))
+(set (best &quot;a&quot;) 42)
+
+(print best)
+</code></pre>
+<p>When you observe a lattice value, you should not say that lattice value <em>is</em> the value you see, rather the lattice value is a lower bound upon it's eventual fixed point value. A more general statement is that observations can correspond to filters, upwards closed sets of lattices.</p>
+<h1 id="aggregates"><a class="header" href="#aggregates">Aggregates</a></h1>
+<p>Aggregates include sum, count, multiplication</p>
+<p>Traditionally, aggregates are determined after the fixed point is reached in the datalog rule iteration. In this sense, aggregation is a relative of negation, which also requires the fixed point before it can determine a fact with never be dervied.</p>
+<h1 id="subsumption"><a class="header" href="#subsumption">Subsumption</a></h1>
+<p>Souffle has a very powerful feature called subsumption, which is a form of conditional deletion.</p>
+<h4 id="max-min"><a class="header" href="#max-min">max min</a></h4>
+<p>Max, min using subsumption. </p>
+<pre><code>mymax(z) :- reltomax(z).
+mymax(z) &lt;= mymax(z2) :- z1 &lt;= z2.
+</code></pre>
+<p>Can I do sum and count? Maybe not. Not without tracking what we've already used. You could do this with bitsets. Requires reflection I guess. c
+Ah, I don't need to require tracking the set of already used, only count. Oh. Wait. no.</p>
+<pre><code>mysum(count : unsigned, partial_sum : unsigned)
+mysum(1,n) :- foo(n).
+mysum(n+1,) 
+nope
+</code></pre>
+<p>But if I cluster them into groups, I can take approximate sums.
+What if I track the current biggest element in the sum. This is tracking the state of a naive summation algorithm. We can lways necode an imperative algorithm to datalog by tracking state. This relies on summing positive numbers only</p>
+<pre><code>mysum(n,n) :- foo(n).
+mysum(n, partsum + n) :- mysum(top,partsum), foo(n), top &lt; n.
+mysum(n,sum) &lt;= mysum(n,sum') :- sum &lt;= sum'.
+</code></pre>
+<p>count</p>
+<pre><code>mycount(n,1) :- foo(n).
+mycount(n, partcount + 1) :- mysum(top,partcount), foo(n), top &lt; n.
+mysum(n,count) &lt;= mysum(n,count2) :- count &lt;= count2.
+</code></pre>
+<p>Could hyperloglog be relevant for approximate counts? https://en.wikipedia.org/wiki/HyperLogLog</p>
+<p>A* search. Interesting. If you have the a bound on distance you can subsumpt away bad possible paths. Path search is a canonical datalog program. Subsumption allows shortest path search (which I showed above).</p>
+<h4 id="lattices-1"><a class="header" href="#lattices-1">Lattices</a></h4>
+<p>See also bitset lattice above</p>
+<p>Lattices are in some respects just an optimization. They allow the database to coalesce rows in a principled way. One could allow the database to be filled with the junk of lesser lattice values.</p>
+<p>Lattices can be sometimes encoded into finite sets. Consider the 4 valued lattice of unknonw, true, false, conflict. These are the power sets of a set of size 2. This can be represented as two tables which can be in different states of full. Because of stratified negation, it is not always possible to observe things. You shouldn't really observe anything other than filter questions anyhow though. Anf you're always above unknown.
+true(a), false(a)</p>
+<p>You often need 1 rule to combine pieces with the join of the lattice and 1 rule for subsumption. This is probably not efficient, but it is works.
+It would be be nice to have a construct that did both at once efficiently. We should be immeditaly erasing a and b when we compute their join.</p>
+<pre><code class="language-souffle">rel(join(a,b)) :- rel(a), rel(b).
+rel(a) &lt;= rel(b) :- lattice_order(a, b).
+</code></pre>
+<p>Perhaps you could make a generic lattice compment parametrized over join</p>
+<pre><code>.comp Lattice&lt;T&gt; {
+  .decl join(x: T, y : T, z : T) overridable
+  .decl r(x:T, y:T)
+  r(z) :- r(x), r(y), join(x,y,z).
+  r(x) &lt;= r(y) :- join(x,y,y).
+}
+</code></pre>
+<p>But filling out joi will be annoying. There isn't a great way to parametrize over functors so far as I can tell.</p>
+<p>Todo:</p>
+<ul>
+<li>vsa</li>
+</ul>
+<h5 id="minmax-lattice"><a class="header" href="#minmax-lattice">Min/max lattice</a></h5>
+<p>labaeller Max lattice
+I suppose in a sense this is the lattice of the function space <code>T -&gt; int</code> defining join pointwise. If that's your bag.</p>
+<pre><code class="language-souffle">.comp Upper&lt;T&gt; {
+   .decl upper(label: T, x : unsigned)
+   upper(l,x) &lt;= upper(l,x1) :- x &lt;= x1.
+}
+
+.comp Lower&lt;T&gt; {
+   .decl lower(label: T, x : unsigned)
+   lower(l,x) &lt;= lower(l,x1) :- x1 &lt;= x.
+}
+
+.init symu = Upper&lt;symbol&gt;
+
+symu.upper(&quot;x&quot;, 1).
+symu.upper(&quot;x&quot;, 7).
+symu.upper(&quot;y&quot;, 4).
+.output symu.upper(IO=stdout)
+
+</code></pre>
+<p>If you have both, you have an interval, see below.</p>
+<h5 id="maybeoption-lattice"><a class="header" href="#maybeoption-lattice">Maybe/Option lattice</a></h5>
+<pre><code class="language-prolog">
+.type optionsymbol = None {} | Some {val : symbol}
+
+.decl A(v : optionsymbol)
+
+A($Some(&quot;foo&quot;)).
+A($Some(&quot;fiz&quot;)).
+A($Some(&quot;foz&quot;)).
+//A($None()).
+
+A($None()) :- A(x), A(y), x != y.
+A(x) &lt;= A($None()) :- A($None()).
+
+.output A(IO=stdout)
+</code></pre>
+<p>Also you can make N max set lattice. Keep sorted. Insertion sort. Kind of a pain if you get too many</p>
+<pre><code>.type Nary = None {} | One {a : T} | Two {a : T, b : T} | Top {}
+</code></pre>
+<h5 id="intervals"><a class="header" href="#intervals">Intervals</a></h5>
+<pre><code class="language-souffle">.type Interval = [l : float, u : float]
+.type Expr = Add {a : Expr, b : Expr} | Lit { a : float} | Var {x : symbol} 
+
+// all expressions
+.decl expr(e : Expr)
+expr(a), expr(b) :- expr($Add(a,b)).
+
+expr($Add($Var(&quot;x&quot;), $Lit(1))).
+
+.decl iexpr(e : Expr, i : Interval)
+iexpr($Lit(n), [n,n]):- expr($Lit(n)).
+iexpr(e, [la + lb, ua + ub]) :- iexpr( a, [la,ua] ), iexpr(b, [lb, ub]), e = $Add(a,b), expr(e).
+
+// also vice versa back down the tree
+iexpr(b, [ l1 - ua, u1 - la]) :- iexpr($Add(a,b), [l1,u1]), iexpr(a, [la,ua]).
+
+
+iexpr($Var(&quot;x&quot;), [-1,1]).
+iexpr($Var(&quot;x&quot;), [0,1]).
+iexpr($Add($Var(&quot;x&quot;), $Var(&quot;x&quot;)), [0.5,0.75]).
+
+// meet semantics
+iexpr(e, [max(l1,l2), min(u1,u2)]) :- iexpr(e, [l1,u1]), iexpr(e, [l2,u2]).
+iexpr(e, [l1,u1]) &lt;= iexpr(e, [l2,u2]) :- l1 &lt;= l2, u2 &lt;= u1.  
+.output iexpr(IO=stdout)
+</code></pre>
+<p>It may not be worth packing into a record though. This almost certainly has performance cost. Records never get deleted. So you should just unpack into a relation. </p>
+<pre><code>// intervals getting bigger
+/*
+components?
+We'd need to know at compile time how many possible instantations
+.comp Interval&lt;T&gt;{
+    .decl upper(x : T)
+    .decl lower(x : T)
+}
+
+
+*/
+.decl upper(t : symbol, x : float)
+upper(t,x) &lt;= upper(t, y) :- x &lt;= y.
+.decl lower(t : symbol, x : float)
+lower(t,x) &lt;= lower(t, y) :- y &lt;= x.
+
+.output upper(IO=stdout)
+.output lower(IO=stdout)
+
+upper(&quot;foo&quot;, 7).
+upper(&quot;foo&quot;, 8).
+upper(&quot;fiz&quot;, 9).
+
+lower(&quot;foo&quot;, 8).
+lower(&quot;fiz&quot;, 9).
+lower(&quot;foo&quot;, -3).
+
+
+.comp Interval&lt;T&gt;{
+    .decl upper(x : T)
+    upper(x) &lt;= upper(y) :- x &lt;= y.
+    .decl lower(x : T)
+    lower(x) &lt;= lower(y) :- y &lt;= x.
+}
+.init i1 = Interval&lt;float&gt;
+
+i1.upper(3).
+i1.upper(14).
+.output i1.upper(IO=stdout)
+</code></pre>
+<h1 id="bitsets"><a class="header" href="#bitsets">BitSets</a></h1>
+<h1 id="first-class-sets"><a class="header" href="#first-class-sets">First Class Sets</a></h1>
 
                     </main>
 
@@ -154,7 +344,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="logic.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="prolog.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -168,7 +358,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="logic.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="prolog.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

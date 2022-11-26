@@ -2,7 +2,7 @@
 
 To get started, let's demonstrate the core constructs of Datalog.
 
-In Souffle Datalog, tables are declared alongside the types and names of their columns. This is the analog of a `CREATE` statement in SQL. The names of the columns are not used except for printing in Souffle.
+In Souffle Datalog, tables are declared alongside the types and names of their columns. The names of the columns are not used except for printing in Souffle.
 
 Souffle Datalog has a number of basic built in types
 
@@ -38,11 +38,11 @@ this_table_wont_print("hidden").
 ```
 
 ## Rules
-The simplistic syntax for insertion of facts is nice, but datalog rules are where it shines.
+Insertion of facts is nice, but datalog _rules_ are where it shines.
 
 Rules describe how new facts can be derived from the already known database of facts. Sometimes the initial facts are called the intensional database (IDB) and the derived facts are called the extensional database (EDB).
 
-They have a right hand side know as a clause which corresponds roughly to a `SELECT` query and left hand side known as a head which corresponds to an `INSERT`. Facts can be seen as a rule with an empty unconditional body.
+They have a right hand side know as a body which corresponds roughly to a `SELECT` query and left hand side known as a head which corresponds to an `INSERT`. Facts can be seen as a rule with an empty unconditional body.
 
 An SQL style query can be encoded by making a rule whose body corresponds to the query and saves the result to a table in the head.
 
@@ -52,7 +52,8 @@ foo("a","a").
 foo("b","a").
 
 .decl myquery(x : symbol)
-myquery(a) :- foo(x,x). 
+// SELECT foo.x FROM foo WHERE foo.x = foo.y
+myquery(x) :- foo(x,x). 
 .output myquery(IO=stdout)
 ```
 

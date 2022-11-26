@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">7.</strong> Logic Programs and Magic Set</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Imperative Programs</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">10.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">11.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">1.</strong> Basics</a></li><li class="chapter-item expanded "><a href="negation.html"><strong aria-hidden="true">2.</strong> Negation</a></li><li class="chapter-item expanded "><a href="adt.html"><strong aria-hidden="true">3.</strong> Algebraic Data Types</a></li><li class="chapter-item expanded "><a href="seminaive.html"><strong aria-hidden="true">4.</strong> Semi-naive Evaluation</a></li><li class="chapter-item expanded affix "><li class="part-title">Applications</li><li class="chapter-item expanded "><a href="analysis.html"><strong aria-hidden="true">5.</strong> Program Analysis</a></li><li class="chapter-item expanded "><a href="lattices.html"><strong aria-hidden="true">6.</strong> Aggregates, Lattices, and Subsumption</a></li><li class="chapter-item expanded "><a href="prolog.html"><strong aria-hidden="true">7.</strong> Prolog</a></li><li class="chapter-item expanded "><a href="imperative.html"><strong aria-hidden="true">8.</strong> Modelling State</a></li><li class="chapter-item expanded "><a href="functional.html"><strong aria-hidden="true">9.</strong> Functional Programs</a></li><li class="chapter-item expanded "><a href="graphs.html"><strong aria-hidden="true">10.</strong> Graphs</a></li><li class="chapter-item expanded affix "><li class="part-title">Egglog</li><li class="chapter-item expanded "><a href="egglog.html"><strong aria-hidden="true">11.</strong> Egglog</a></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="sql.html"><strong aria-hidden="true">12.</strong> SQL</a></li><li class="chapter-item expanded "><a href="implementations.html"><strong aria-hidden="true">13.</strong> Implementations</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -158,7 +158,7 @@
 <p>This book is built around the syntax of the implementation <a href="https://souffle-lang.github.io/">Souffle Datalog</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="basics"><a class="header" href="#basics">Basics</a></h1>
 <p>To get started, let's demonstrate the core constructs of Datalog.</p>
-<p>In Souffle Datalog, tables are declared alongside the types and names of their columns. This is the analog of a <code>CREATE</code> statement in SQL. The names of the columns are not used except for printing in Souffle.</p>
+<p>In Souffle Datalog, tables are declared alongside the types and names of their columns. The names of the columns are not used except for printing in Souffle.</p>
 <p>Souffle Datalog has a number of basic built in types</p>
 <ul>
 <li><code>symbol</code> is effectively a string datatype</li>
@@ -184,16 +184,17 @@ mytable(&quot;Hi&quot;, -47, 7331, 11.1).
 this_table_wont_print(&quot;hidden&quot;).
 </code></pre>
 <h2 id="rules"><a class="header" href="#rules">Rules</a></h2>
-<p>The simplistic syntax for insertion of facts is nice, but datalog rules are where it shines.</p>
+<p>Insertion of facts is nice, but datalog <em>rules</em> are where it shines.</p>
 <p>Rules describe how new facts can be derived from the already known database of facts. Sometimes the initial facts are called the intensional database (IDB) and the derived facts are called the extensional database (EDB).</p>
-<p>They have a right hand side know as a clause which corresponds roughly to a <code>SELECT</code> query and left hand side known as a head which corresponds to an <code>INSERT</code>. Facts can be seen as a rule with an empty unconditional body.</p>
+<p>They have a right hand side know as a body which corresponds roughly to a <code>SELECT</code> query and left hand side known as a head which corresponds to an <code>INSERT</code>. Facts can be seen as a rule with an empty unconditional body.</p>
 <p>An SQL style query can be encoded by making a rule whose body corresponds to the query and saves the result to a table in the head.</p>
 <pre><code class="language-souffle">.decl foo(x : symbol, y : symbol)
 foo(&quot;a&quot;,&quot;a&quot;).
 foo(&quot;b&quot;,&quot;a&quot;).
 
 .decl myquery(x : symbol)
-myquery(a) :- foo(x,x). 
+// SELECT foo.x FROM foo WHERE foo.x = foo.y
+myquery(x) :- foo(x,x). 
 .output myquery(IO=stdout)
 </code></pre>
 <h2 id="recursion"><a class="header" href="#recursion">Recursion</a></h2>
@@ -265,8 +266,18 @@ list($Cons(3,$Cons(2,$Cons(1,$Nil())))).
 </code></pre>
 <h2 id="autoinc-and-skolemization"><a class="header" href="#autoinc-and-skolemization">Autoinc and Skolemization</a></h2>
 <p>It is very tempting and operationally simple to use the <code>autoinc()</code> feature, which maintains a mutable counter that increments by one every time you call it. This is really problematic with regards to the declarative semantics of datalog. You get different results depending on the order and how many times you execute rules.</p>
-<p>It is almost universally better to </p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="semi-naive-evaluation"><a class="header" href="#semi-naive-evaluation">Semi-naive Evaluation</a></h1>
+<p>It is almost universally better to use ADTs instead of <code>autoinc()</code>. The reason this is so is that you can replace the id with a term that holds the <em>reasons</em> you thought you needed a new id. Then, if the same reasons apply again, it will produce the same term. This same term will not make a new duplicate entry in the database, because datalog is manipulating sets, whereas autoinc would produce a fresh number and that <em>would</em> produce an essentially duplicate record. It is quite hard to get autoinc to terminate ever, and even worse it produces a lot of junk.</p>
+<h1 id="egglog"><a class="header" href="#egglog">Egglog</a></h1>
+<p>Egglog is also intimately based around the concept of datatypes.
+There are a number of differences from souffle's treatment</p>
+<ol>
+<li>Datatypes are open. You can add new constructors. In fact, egglog's notion of datatype is not currently distinct from egglog's notion of function.</li>
+<li>Datatypes are searchable. Souffle does not store flattened ADTs as regular tables. Instead it uses a record storing hash table. The only way this hash table can be queried is by dereferencing a record id, or giving the table a record to produce an id. Partially filled in records as queries are not a thing. You can manually reflect into indexing tables if you like. This is a common technique.</li>
+<li>Egglog's &quot;record ids&quot; are not stable over time. They change as the equality relation discovers new relationships.</li>
+</ol>
+<pre><code class="language-scheme">(datatype Expr (Add Expr Expr) (Lit i64))
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="semi-naive-evaluation"><a class="header" href="#semi-naive-evaluation">Semi-Naive Evaluation</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="program-analysis"><a class="header" href="#program-analysis">Program Analysis</a></h1>
 <h2 id="pure-expressions"><a class="header" href="#pure-expressions">Pure Expressions</a></h2>
 <h3 id="huttons-razor"><a class="header" href="#huttons-razor">Hutton's Razor</a></h3>
@@ -335,14 +346,394 @@ aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
 
 </code></pre>
 <p>Another thing we can do in this simple language is a valueset analysis. Given the set of possible values</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="aggregates-lattices-and-subsumptions"><a class="header" href="#aggregates-lattices-and-subsumptions">Aggregates, Lattices, and Subsumptions</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="logic-programs-and-magic-set"><a class="header" href="#logic-programs-and-magic-set">Logic Programs and Magic Set</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="imperative-programs"><a class="header" href="#imperative-programs">Imperative Programs</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="aggregates-lattices-and-subsumption"><a class="header" href="#aggregates-lattices-and-subsumption">Aggregates, Lattices, and Subsumption</a></h1>
+<h1 id="lattices"><a class="header" href="#lattices">Lattices</a></h1>
+<p>A lattice is a very useful mathematical concept for computer science. The common applications involve a data structure or data type that have some notion of combination.</p>
+<p>The algebraic laws of the lattice are</p>
+<ul>
+<li>idempotency - It's ok for the system to combine things twice</li>
+<li>commutativity and associativity - It's ok for the system to reorder operations</li>
+</ul>
+<p>If a computer system can know it's ok to do these things are still get the same results, significant oppurtunities for optimization present themselves. One becomes free for example to perform operations in a distributed way and combne them back together in whatever order or duplication the results arrive in. </p>
+<p>Lattices often have the feel of some bound getting tighter, information being gained, or a structure becoming more defined.</p>
+<p>Examples include:
+- integers combined under maximum 
+- integers combined under minimum
+- Intervals
+- Option
+- Sets under intersection or union</p>
+<pre><code class="language-scheme">(function best (String) i64 :merge (max old new)) ; :default 0
+
+(set (best &quot;a&quot;) 10)
+(set (best &quot;a&quot;) 20)
+(set (best &quot;b&quot;) 5)
+;(define bestc (best &quot;c&quot;))
+(set (best &quot;a&quot;) 42)
+
+(print best)
+</code></pre>
+<p>When you observe a lattice value, you should not say that lattice value <em>is</em> the value you see, rather the lattice value is a lower bound upon it's eventual fixed point value. A more general statement is that observations can correspond to filters, upwards closed sets of lattices.</p>
+<h1 id="aggregates"><a class="header" href="#aggregates">Aggregates</a></h1>
+<p>Aggregates include sum, count, multiplication</p>
+<p>Traditionally, aggregates are determined after the fixed point is reached in the datalog rule iteration. In this sense, aggregation is a relative of negation, which also requires the fixed point before it can determine a fact with never be dervied.</p>
+<h1 id="subsumption"><a class="header" href="#subsumption">Subsumption</a></h1>
+<p>Souffle has a very powerful feature called subsumption, which is a form of conditional deletion.</p>
+<h4 id="max-min"><a class="header" href="#max-min">max min</a></h4>
+<p>Max, min using subsumption. </p>
+<pre><code>mymax(z) :- reltomax(z).
+mymax(z) &lt;= mymax(z2) :- z1 &lt;= z2.
+</code></pre>
+<p>Can I do sum and count? Maybe not. Not without tracking what we've already used. You could do this with bitsets. Requires reflection I guess. c
+Ah, I don't need to require tracking the set of already used, only count. Oh. Wait. no.</p>
+<pre><code>mysum(count : unsigned, partial_sum : unsigned)
+mysum(1,n) :- foo(n).
+mysum(n+1,) 
+nope
+</code></pre>
+<p>But if I cluster them into groups, I can take approximate sums.
+What if I track the current biggest element in the sum. This is tracking the state of a naive summation algorithm. We can lways necode an imperative algorithm to datalog by tracking state. This relies on summing positive numbers only</p>
+<pre><code>mysum(n,n) :- foo(n).
+mysum(n, partsum + n) :- mysum(top,partsum), foo(n), top &lt; n.
+mysum(n,sum) &lt;= mysum(n,sum') :- sum &lt;= sum'.
+</code></pre>
+<p>count</p>
+<pre><code>mycount(n,1) :- foo(n).
+mycount(n, partcount + 1) :- mysum(top,partcount), foo(n), top &lt; n.
+mysum(n,count) &lt;= mysum(n,count2) :- count &lt;= count2.
+</code></pre>
+<p>Could hyperloglog be relevant for approximate counts? https://en.wikipedia.org/wiki/HyperLogLog</p>
+<p>A* search. Interesting. If you have the a bound on distance you can subsumpt away bad possible paths. Path search is a canonical datalog program. Subsumption allows shortest path search (which I showed above).</p>
+<h4 id="lattices-1"><a class="header" href="#lattices-1">Lattices</a></h4>
+<p>See also bitset lattice above</p>
+<p>Lattices are in some respects just an optimization. They allow the database to coalesce rows in a principled way. One could allow the database to be filled with the junk of lesser lattice values.</p>
+<p>Lattices can be sometimes encoded into finite sets. Consider the 4 valued lattice of unknonw, true, false, conflict. These are the power sets of a set of size 2. This can be represented as two tables which can be in different states of full. Because of stratified negation, it is not always possible to observe things. You shouldn't really observe anything other than filter questions anyhow though. Anf you're always above unknown.
+true(a), false(a)</p>
+<p>You often need 1 rule to combine pieces with the join of the lattice and 1 rule for subsumption. This is probably not efficient, but it is works.
+It would be be nice to have a construct that did both at once efficiently. We should be immeditaly erasing a and b when we compute their join.</p>
+<pre><code class="language-souffle">rel(join(a,b)) :- rel(a), rel(b).
+rel(a) &lt;= rel(b) :- lattice_order(a, b).
+</code></pre>
+<p>Perhaps you could make a generic lattice compment parametrized over join</p>
+<pre><code>.comp Lattice&lt;T&gt; {
+  .decl join(x: T, y : T, z : T) overridable
+  .decl r(x:T, y:T)
+  r(z) :- r(x), r(y), join(x,y,z).
+  r(x) &lt;= r(y) :- join(x,y,y).
+}
+</code></pre>
+<p>But filling out joi will be annoying. There isn't a great way to parametrize over functors so far as I can tell.</p>
+<p>Todo:</p>
+<ul>
+<li>vsa</li>
+</ul>
+<h5 id="minmax-lattice"><a class="header" href="#minmax-lattice">Min/max lattice</a></h5>
+<p>labaeller Max lattice
+I suppose in a sense this is the lattice of the function space <code>T -&gt; int</code> defining join pointwise. If that's your bag.</p>
+<pre><code class="language-souffle">.comp Upper&lt;T&gt; {
+   .decl upper(label: T, x : unsigned)
+   upper(l,x) &lt;= upper(l,x1) :- x &lt;= x1.
+}
+
+.comp Lower&lt;T&gt; {
+   .decl lower(label: T, x : unsigned)
+   lower(l,x) &lt;= lower(l,x1) :- x1 &lt;= x.
+}
+
+.init symu = Upper&lt;symbol&gt;
+
+symu.upper(&quot;x&quot;, 1).
+symu.upper(&quot;x&quot;, 7).
+symu.upper(&quot;y&quot;, 4).
+.output symu.upper(IO=stdout)
+
+</code></pre>
+<p>If you have both, you have an interval, see below.</p>
+<h5 id="maybeoption-lattice"><a class="header" href="#maybeoption-lattice">Maybe/Option lattice</a></h5>
+<pre><code class="language-prolog">
+.type optionsymbol = None {} | Some {val : symbol}
+
+.decl A(v : optionsymbol)
+
+A($Some(&quot;foo&quot;)).
+A($Some(&quot;fiz&quot;)).
+A($Some(&quot;foz&quot;)).
+//A($None()).
+
+A($None()) :- A(x), A(y), x != y.
+A(x) &lt;= A($None()) :- A($None()).
+
+.output A(IO=stdout)
+</code></pre>
+<p>Also you can make N max set lattice. Keep sorted. Insertion sort. Kind of a pain if you get too many</p>
+<pre><code>.type Nary = None {} | One {a : T} | Two {a : T, b : T} | Top {}
+</code></pre>
+<h5 id="intervals"><a class="header" href="#intervals">Intervals</a></h5>
+<pre><code class="language-souffle">.type Interval = [l : float, u : float]
+.type Expr = Add {a : Expr, b : Expr} | Lit { a : float} | Var {x : symbol} 
+
+// all expressions
+.decl expr(e : Expr)
+expr(a), expr(b) :- expr($Add(a,b)).
+
+expr($Add($Var(&quot;x&quot;), $Lit(1))).
+
+.decl iexpr(e : Expr, i : Interval)
+iexpr($Lit(n), [n,n]):- expr($Lit(n)).
+iexpr(e, [la + lb, ua + ub]) :- iexpr( a, [la,ua] ), iexpr(b, [lb, ub]), e = $Add(a,b), expr(e).
+
+// also vice versa back down the tree
+iexpr(b, [ l1 - ua, u1 - la]) :- iexpr($Add(a,b), [l1,u1]), iexpr(a, [la,ua]).
+
+
+iexpr($Var(&quot;x&quot;), [-1,1]).
+iexpr($Var(&quot;x&quot;), [0,1]).
+iexpr($Add($Var(&quot;x&quot;), $Var(&quot;x&quot;)), [0.5,0.75]).
+
+// meet semantics
+iexpr(e, [max(l1,l2), min(u1,u2)]) :- iexpr(e, [l1,u1]), iexpr(e, [l2,u2]).
+iexpr(e, [l1,u1]) &lt;= iexpr(e, [l2,u2]) :- l1 &lt;= l2, u2 &lt;= u1.  
+.output iexpr(IO=stdout)
+</code></pre>
+<p>It may not be worth packing into a record though. This almost certainly has performance cost. Records never get deleted. So you should just unpack into a relation. </p>
+<pre><code>// intervals getting bigger
+/*
+components?
+We'd need to know at compile time how many possible instantations
+.comp Interval&lt;T&gt;{
+    .decl upper(x : T)
+    .decl lower(x : T)
+}
+
+
+*/
+.decl upper(t : symbol, x : float)
+upper(t,x) &lt;= upper(t, y) :- x &lt;= y.
+.decl lower(t : symbol, x : float)
+lower(t,x) &lt;= lower(t, y) :- y &lt;= x.
+
+.output upper(IO=stdout)
+.output lower(IO=stdout)
+
+upper(&quot;foo&quot;, 7).
+upper(&quot;foo&quot;, 8).
+upper(&quot;fiz&quot;, 9).
+
+lower(&quot;foo&quot;, 8).
+lower(&quot;fiz&quot;, 9).
+lower(&quot;foo&quot;, -3).
+
+
+.comp Interval&lt;T&gt;{
+    .decl upper(x : T)
+    upper(x) &lt;= upper(y) :- x &lt;= y.
+    .decl lower(x : T)
+    lower(x) &lt;= lower(y) :- y &lt;= x.
+}
+.init i1 = Interval&lt;float&gt;
+
+i1.upper(3).
+i1.upper(14).
+.output i1.upper(IO=stdout)
+</code></pre>
+<h1 id="bitsets"><a class="header" href="#bitsets">BitSets</a></h1>
+<h1 id="first-class-sets"><a class="header" href="#first-class-sets">First Class Sets</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="prolog"><a class="header" href="#prolog">Prolog</a></h1>
+<p>Read <a href="https://www.metalevel.at/prolog">The Power of Prolog</a>.</p>
+<h1 id="prolog-vs-datalog"><a class="header" href="#prolog-vs-datalog">Prolog vs Datalog</a></h1>
+<p>Compare with top down vs bottom up in dynamic programming.</p>
+<p>Datalog is the &quot;answer&quot; half of prolog. It corresponds to &quot;returns&quot; in prolog</p>
+<h1 id="what-is-logic-programming"><a class="header" href="#what-is-logic-programming">What is Logic Programming</a></h1>
+<p>Computation = Proof Search.</p>
+<p><code>:-</code> is horizontal bar of inference rules.</p>
+<h2 id="pure-vs-impure-prolog"><a class="header" href="#pure-vs-impure-prolog">Pure vs Impure Prolog</a></h2>
+<p>For the purposes of this book, I am only referring to mostly pure constructs in prolog.</p>
+<p>Because the control flow of prolog is relatively predictable compared to datalog or minikanren, there is an irresistable temptation to use imperative constructs.
+This situation mirrors that of Haskell vs Scheme/Ocaml. The lazy excution of haskell makes reasoninig about <em>true</em> side effectful code so difficult that they are forced to use the monadic paradigm. There are benefits to this discipline.</p>
+<h1 id="magic-set"><a class="header" href="#magic-set">Magic Set</a></h1>
+<h1 id="unification-variables"><a class="header" href="#unification-variables">Unification Variables</a></h1>
+<p>The meaning of unification variables is not just one thing.</p>
+<h1 id="minikanren"><a class="header" href="#minikanren">Minikanren</a></h1>
+<p>At the level of comparison of this book, minikanren is more or less the same as prolog. It has a very similar notion of unification variable, is top down. It differs from prolog in the method by which is chooses to perform search.</p>
+<p><a href="https://stackoverflow.com/questions/28467011/what-are-the-main-technical-differences-between-prolog-and-minikanren-with-resp">Will Byrd</a> chips in on his comparison between prolog and minikanren.</p>
+<h1 id="tabling"><a class="header" href="#tabling">Tabling</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="modelling-state"><a class="header" href="#modelling-state">Modelling State</a></h1>
 <p>Imperative programs proceed via a manipulation of state.</p>
 <p>In essence, a stateful program can be emulated in datalog by recursively transforming one state to the next.</p>
-<pre><code>state(x,y,z) :- state(x,y,z).
+<pre><code> // Initial state
+state(0,0,0).
+// Transition functions
+state(x1,y1,z1) :- state(x,y,z), x1 = f(x,y,z), y = g(x,y,z), z = h(x,y,z).
+// Transition Relations
+state(x1,y1,z1) :- state(x,y,z), trans(x,y,z,x1,y1,z1).
 </code></pre>
-<p>It is desirable from a modelling perspective to separate out a notion of position in the program as special. Example of position include the state in a state machine, the program counter in assembly, or the statement label in a typical imperative program.</p>
+<p>This is analogous to the simpler problem.</p>
+<pre><code>reachable(0).
+reachable(x1) :- reachable(x), edge(x,x1)
+</code></pre>
+<p>Which is the single source form of the classic datalog <code>path</code> problem, but with more interesting structured vertices.</p>
+<h1 id="die-hard-puzzle"><a class="header" href="#die-hard-puzzle">Die Hard Puzzle</a></h1>
+<p>A fun puzzle is the Die Hard 3 puzzle. This is used in some TLA+ tutorials.</p>
+<pre><code>.pragma &quot;provenance&quot; &quot;explain&quot;
+.decl reach(big : unsigned, small : unsigned)
+reach(0,0).
+// move water small to big
+reach(big + small, 0) :- reach(big,small), big + small &lt;= 5.
+reach(5,  small - (5 - big)) :- reach(big,small), !big + small &lt;= 5.
+// move water big to small
+reach(0, big + small) :- reach(big,small), big + small &lt;= 3.
+reach(big  - (3 - small),  3) :- reach(big,small), !big + small &lt;= 3.
+// empty big
+reach(0, small) :- reach(_,small).
+// empty small
+reach(big,0) :- reach(big,_).
+// fill big
+reach(5, small) :- reach(_,small).
+// fill small
+reach(big,3) :- reach(big,_).
+
+.decl big_is_4(small : unsigned)
+big_is_4(small) :- reach(4,small).
+.output big_is_4(IO=stdout)
+</code></pre>
+<h1 id="imperative-programs"><a class="header" href="#imperative-programs">Imperative Programs</a></h1>
+<p>Here we directly model a simple imperative program. We look at the program to determine the state. There are two variables <code>i</code> and <code>acc</code>. </p>
+<pre><code class="language-souffle">/*
+acc = 0;
+for(i = 0; i &lt; 10; i++){
+  acc += i;
+}
+*/
+.decl sumn(i : number, acc : number)
+sumn(0,0).
+sumn(i+1, s + i) :- sumn(i,s), i &lt; 10.
+.output sumn(IO=stdout)
+</code></pre>
+<p>A more direct modelling of the program is to make sure that the <em>line number</em> / program point is part of your state. This is true. Your underlying CPU tracks the address of code it is running in a register called the program counter. You are in essence modelling that.</p>
+<pre><code class="language-souffle">/*
+// L1
+acc = 0;
+i = 0;
+//L2
+while(i &lt; 10){
+  // L3
+  acc += i;
+  // L4
+  i++;
+}
+//L5
+*/
+
+.decl sumn(pc : number, i : number, acc : number)
+sumn(1,0,0).
+sumn(2,i,acc) :- sumn(1,i,acc).
+sumn(3,i,acc) :- sumn(2,i,acc), i &lt; 10.
+sumn(4,i,acc+i) :- sumn(3,i,acc).
+sumn(2,i+1,acc):- sumn(4,i,acc).
+
+.output sumn(IO=stdout)
+</code></pre>
+<h1 id="factoring-state"><a class="header" href="#factoring-state">Factoring State</a></h1>
+<p>A common overapproximation to try to use is to factor the state into separate relations. This will think more executions are possible than they are, but can be used to prove certain behavior does not happen. The state can only be factored and reconstituted if the subpieces of the state do not interact at all.</p>
+<p>We have made this analysis nonterminating. :(</p>
+<p>.decl acc(pc : number, v : number)
+.decl i(pc : number, v : number)
+acc(1,0). i(1,0).
+acc(2,v) :- acc(1,v). i(2,v) :- i(1,v).
+acc(3,i),i(3,acc) :- acc(2,v), i(2,v), i &lt; 10.
+sumn(4,i,acc+i) :- sumn(3,i,acc).
+sumn(2,i+1,acc):- sumn(4,i,acc).</p>
+<pre><code class="language-souffle">.decl acc(pc : number, v : number)
+.decl i(pc : number, v : number)
+.decl sumn(pc : number, i : number, acc : number) inline
+sumn(pc,i,acc) :- acc(pc,acc), i(pc,i).
+acc(1,0). i(1,0).
+acc(2,acc),i(2,i) :- sumn(1,i,acc).
+acc(3,acc),i(3,i) :- sumn(2,i,acc), i &lt; 10.
+acc(4,acc+1),i(4,i) :- sumn(3,i,acc).
+acc(2,acc),i(2,i+1) :- sumn(4,i,acc).
+
+.limitsize acc(n=20)
+.output acc(IO=stdout)
+</code></pre>
+<h2 id="ball-and-springs"><a class="header" href="#ball-and-springs">Ball and Springs</a></h2>
+<p>Balls and springs are a model of a partial differential equation. We can model the equations of motion, initial conditions, and boundary conditions using datalog. What fun!</p>
+<pre><code class="language-souffle">#define T 10
+.decl ball(t : number, n : number, x : float, v : float)
+// initial conditions
+
+ball(0, n, 0, 0) :- n = range(0,11), n != 5.
+ball(0, 5, 10, 0).
+
+// ball(0, n, x, v) :- n = range(1,10), x = to_float(n) * 0.1, v = 0.
+// ball(0,0,0,0).
+// ball(0,10,0,0).
+
+
+// Boundary condition. iniital and final ball fixed
+ball(t+1,0,0,0) :-  t = range(0,T).
+ball(t+1,10,0,0) :- t = range(0,T).
+
+// dynamics
+ball(t+1, n,  newx, newv) :- 
+  t &lt; T, 
+  ball(t, n-1, x0, _v0), 
+  ball(t, n, x, v), 
+  ball(t, n+1, x2, _v2),
+  newx = x + 0.1 * v,
+  newv = v + 0.1 * (x0 - x + x2 - x).
+.output ball(IO=stdout)
+
+
+</code></pre>
+<h1 id="mandelbrot"><a class="header" href="#mandelbrot">Mandelbrot</a></h1>
+<p>Translated from the <a href="https://www.sqlite.org/lang_with.html">SQLlite docs on recursive ctes</a></p>
+<pre><code class="language-sql">WITH RECURSIVE
+  xaxis(x) AS (VALUES(-2.0) UNION ALL SELECT x+0.05 FROM xaxis WHERE x&lt;1.2),
+  yaxis(y) AS (VALUES(-1.0) UNION ALL SELECT y+0.1 FROM yaxis WHERE y&lt;1.0),
+  m(iter, cx, cy, x, y) AS (
+    SELECT 0, x, y, 0.0, 0.0 FROM xaxis, yaxis
+    UNION ALL
+    SELECT iter+1, cx, cy, x*x-y*y + cx, 2.0*x*y + cy FROM m 
+     WHERE (x*x + y*y) &lt; 4.0 AND iter&lt;28
+  ),
+  m2(iter, cx, cy) AS (
+    SELECT max(iter), cx, cy FROM m GROUP BY cx, cy
+  ),
+  a(t) AS (
+    SELECT group_concat( substr(' .+*#', 1+min(iter/7,4), 1), '') 
+    FROM m2 GROUP BY cy
+  )
+SELECT group_concat(rtrim(t),x'0a') FROM a;
+</code></pre>
+<pre><code class="language-souffle">#define dx 0.05
+#define dy 0.0625
+.decl xaxis(x : float)
+.decl yaxis(y : float)
+.decl m(iter:unsigned, cx : float, cy : float, x : float, y : float)
+.decl m2(iter:unsigned, cx : float, cy : float)
+.decl collect(cx:float, cy:float, line:symbol)
+.decl a(cy:float, line:symbol)
+
+xaxis(-2).
+yaxis(-1.00000001).
+xaxis(x + dx) :- xaxis(x), x &lt; 1.2.
+yaxis(y + dy) :- yaxis(y), y &lt; 1.
+
+m(0,x,y, 0,0) :- xaxis(x), yaxis(y).
+m(iter+1, cx, cy, x*x-y*y + cx, 2.0*x*y + cy ) :- m(iter, cx,cy,x,y),iter &lt; 28, x*x + y*y &lt; 4.0.
+m2(iter, cx,cy) :- xaxis(cx), yaxis(cy), iter = max i : m(i, cx,cy, _,_).
+
+collect(-2.00,cy,&quot;&quot;) :- yaxis(cy).
+collect(cx+dx,cy,line2) :- m2(iter,cx+dx,cy), collect(cx,cy,line), line2 = cat(line,c), 
+                         ( iter &lt; 16 , c = &quot; &quot; ; iter &gt;= 16,  c = &quot;#&quot; ).
+a(1+cy,line) :- cx = max x : xaxis(x), collect(cx,cy,line).
+
+.output a(IO=stdout)
+</code></pre>
+<h1 id="other-stuff"><a class="header" href="#other-stuff">Other stuff</a></h1>
+<ul>
+<li>Concurrent Execution</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="functional-programs"><a class="header" href="#functional-programs">Functional Programs</a></h1>
 <p>There are two issues to tackle when converting functional programs to datalog.</p>
 <ol>
@@ -351,24 +742,84 @@ aexpr(x), aexpr(y) :- aexpr($Add(x,y)).
 </ol>
 <p>Functional programs can be converted to logic programs by making the return value a parameter to the relation. A function is a subcase of relations in which the last column is determined by the initial columns.</p>
 <p>For example, the function <code>factorial(n)</code> becomes the relation <code>factorial(n,res)</code> or <code>append(x,y)</code> becomes <code>append(x,y,res)</code>.</p>
+<pre><code class="language-python">def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * fact(n-1)
+</code></pre>
 <pre><code class="language-souffle">.decl factorial(n : unsigned, res : unsigned)
 factorial(0,1).
-factorial(1,1).
 factorial(n+1, (n + 1) * m) :- factorial(n, m), n &lt; 10.
 .output factorial(IO=stdout)
 </code></pre>
 <p>A priori I have chosen to stop the process at <code>n = 10</code>. This is fine if we can know at compile time what answers we need computed. What if we don't though? Then we need to write the function in a demand driven style.</p>
 <h2 id="demand"><a class="header" href="#demand">Demand</a></h2>
+<p>A simple mechanism to achieve translate function programs is to define auxiliary demand relations. These relations do not have the field corresponding the result of the function.</p>
+<p>Demand needs to be propagated downward. For every subcall in the body of a functions definition, you need to produce the demand for that subcall.</p>
+<pre><code class="language-souffle editable">.decl _factorial(n : unsigned)
+.decl factorial(n : unsigned, res : unsigned)
+factorial(0,1).
+_factorial(n-1) :- _factorial(n), n &gt; 0. // demand propagation
+factorial(n+1, (n + 1) * m) :- _factorial(n+1), factorial(n, m).
+
+_factorial(10).
+.output factorial(IO=stdout)
+</code></pre>
+<h2 id="lists"><a class="header" href="#lists">Lists</a></h2>
+<p>We can show some common list functions to demonstrate this point further.</p>
+<pre><code class="language-souffle">.comp List&lt;A&gt;{
+  .type t = [hd : A, tl : t]
+  .decl _length(l : t)
+  .decl length(l : t, res : unsigned)
+  
+  _length(tl) :- _length([_hd,tl]).
+  length(nil,0).
+  length([hd,tl], n+1) :- _length([hd,tl]), length(tl,n).
+
+  .decl _nth(l : t, n : unsigned)
+  .decl nth(l : t, n : unsigned , res : A)
+  _nth(tl, n - 1) :- _nth([_hd,tl], n), n &gt; 0.
+  nth([hd,tl],0,hd) :- _nth([hd,tl], 0).
+  nth([hd,tl], n, res):- _nth([hd, tl], n), nth(tl, n-1, res).
+
+  .decl _rev(l : t)
+  .decl __rev(l : t, rem : t, acc : t)
+  .decl rev(l : t, res : t)
+  __rev(l, l, nil) :- _rev(l).
+  __rev(l, tl, [hd,acc]) :- __rev(l, [hd, tl], acc).
+  rev(l, acc) :- __rev(l, nil, acc).
+
+  .decl _append(x : t, y : t)
+  .decl append(x : t, y : t, z : t)
+  _append(tl, y) :- _append([_hd, tl], y).
+  append(nil, y, y) :- _append(nil, y).
+  append([hd,tl], y, [hd, z]) :- _append([hd,tl], y), append(tl, y, z).
+
+  .decl _mem(x : A, l : t)
+  .decl mem(x : A, l : t, res : number)
+  mem(x, nil, 0) :- _mem(x, nil).
+  mem(x, [hd,tl], 1) :- _mem(x, [hd,tl]), x = hd.
+  _mem(x, tl) :- _mem(x, [hd,tl]), x != hd.
+  mem(x, [hd,tl], res) :- _mem(x, [hd,tl]), x != hd, mem(x, tl, res).
+
+}
+</code></pre>
 <h2 id="the-stack"><a class="header" href="#the-stack">The Stack</a></h2>
 <p>In the actual implementation of a functional program, there exists some data structure to keep track of who needs what results and what to do with them next. This is typically achieved via a stack, which records return addresses and records the needed state of the call site.</p>
 <p>The stack is an implicit data structure that most languages maintain for you, but it is useful to note sometime that it is there.</p>
 <p>This same observation is useful in other programming contexts. It is sometimes relatively wasteful to use the general purpose function call mechanism. You can convert a recursive function call into a loop and maintain that analog of your own stack for efficiency purposes.</p>
 <p>Datalog does not have an implicit stack. If you want such a thing, you must build it.</p>
+<h1 id="demand-by-option-lattice"><a class="header" href="#demand-by-option-lattice">Demand by Option Lattice</a></h1>
+<p>A refactoring of the above 2 relations,is to use one single lattice where the result field is in an Option lattice. The value of None represents unknown value / demand and Some(x) represents a computed result.</p>
+<h1 id="egglog-1"><a class="header" href="#egglog-1">Egglog</a></h1>
+<p>Egglog is a new style of datalog</p>
 <h1 id="macros"><a class="header" href="#macros">Macros</a></h1>
 <p>Souffle datalog by default offers C preprocesor macros. These are useful for defining simple functions.</p>
-<h1 id="inline-relations"><a class="header" href="#inline-relations">Inline relations</a></h1>
+<h1 id="inline-relations"><a class="header" href="#inline-relations">Inline Relations</a></h1>
+<p>Souffle datalog offers a feature of inline relations. This performs top down resolution at compile time, but has to terminate, so inline relations cannot be recursively defined.. This is mainly useful for simple complex but non recursive definitions.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="graphs"><a class="header" href="#graphs">Graphs</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="egglog"><a class="header" href="#egglog">Egglog</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="egglog-2"><a class="header" href="#egglog-2">Egglog</a></h1>
 <pre><code class="language-scheme editable runnable">
 ; edit me
 (datatype Expr (Lit i64) (Add Expr Expr))
@@ -977,7 +1428,7 @@ decision diagrams as it's core datastructure. While the egglog encoding of the
 structure is unlikely going to be as efficient as a bespoke implementation, it
 is capable of describing them in its surface language as a first class construct. BDDs are one form of a
 first class set.</p>
-<pre><code class="language-scheme">(datatype BDD
+<pre><code class="language-scheme editable">(datatype BDD
     (ITE i64 BDD BDD) ;; variables labelled by number
     (True)
     (False)
@@ -1094,6 +1545,9 @@ rich semantic analyses \textit{a la} Datalog.}
 <h2 id="unification"><a class="header" href="#unification">Unification</a></h2>
 <p>Programmable Unification without backtracking</p>
 <h2 id="bitvectors"><a class="header" href="#bitvectors">Bitvectors</a></h2>
+<h2 id="egraphs"><a class="header" href="#egraphs">Egraphs</a></h2>
+<p>Explain what an egraph is</p>
+<h1 id="reflection"><a class="header" href="#reflection">Reflection</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sql"><a class="header" href="#sql">SQL</a></h1>
 <p>SQL at it's core is expressions of the form <code>SELECT ... FROM ... WHERE ...</code>. This makes it more query language like than programming language like. Most programming languages have a more recursive structure.</p>
 <p>Extensions to SQL can do all sorts of crazy things.</p>

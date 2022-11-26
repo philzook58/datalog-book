@@ -8,8 +8,8 @@
 # Applications
 - [Program Analysis](./analysis.md)
 - [Aggregates, Lattices, and Subsumption](lattices.md)
-- [Logic Programs and Magic Set](./logic.md)
-- [Imperative Programs](./imperative.md)
+- [Prolog](./prolog.md)
+- [Modelling State](./imperative.md)
 - [Functional Programs](./functional.md)
 - [Graphs](./graphs.md)
 # Egglog

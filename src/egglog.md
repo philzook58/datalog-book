@@ -679,7 +679,7 @@ is capable of describing them in its surface language as a first class construct
 first class set.
 
 
-```scheme
+```scheme,editable
 (datatype BDD
     (ITE i64 BDD BDD) ;; variables labelled by number
     (True)
@@ -802,3 +802,9 @@ The last rule is guarded by the equational precondition
 Programmable Unification without backtracking
 
 ## Bitvectors
+
+
+## Egraphs
+Explain what an egraph is
+
+# Reflection
